@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+
+<style>
+@import url(https://fonts.googleapis.com/css2?family=Anton&family=Roboto:700&display=swap);
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 20px; /* aumentato */
+  line-height: 1.5em;
+  color: #fff;
+  text-shadow: 0 0 1px #000, 0 0 2px #000;
+  background: transparent;
+}
+
+/* CONTENITORE */
+#bits-log{
+  position: absolute;
+  inset: 0;
+  padding: 12px;
+  background: rgba(88,7,7,0.7);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* BORDO */
+#bits-log::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+  padding:2px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.95),
+    rgba(255,255,255,0.45),
+    rgba(255,255,255,0.95)
+  );
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  box-shadow: 0 0 12px rgba(255,255,255,0.25);
+  pointer-events:none;
+}
+
+/* HEADER (IDENTICO ALLA CHAT) */
+#bits-header{
+  font-family:'Anton', sans-serif;
+  font-size:1.4em;   /* stessa dimensione della chat */
+  letter-spacing:1px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.95),
+    rgba(240,240,240,0.95)
+  );
+
+  color:#831d1c;
+  text-shadow:none;
+
+  padding:6px 10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  text-align:center;
+  position:relative;
+}
+
+#bits-header::after{
+  content:"";
+  position:absolute;
+  left:10%;
+  right:10%;
+  bottom:-3px;
+  height:2px;
+
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0.9),
+    rgba(255,255,255,0)
+  );
+
+  border-radius:2px;
+  opacity:.8;
+}
+
+/* LISTA */
+#bits-inner{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* RIGHE */
+.bits-row{
+  display:grid;
+  grid-template-columns: 52px 1fr; /* colonna numeri stretta ma allineata */
+  align-items:center;
+  gap:8px;
+
+  padding:8px 10px;
+  border-radius:10px;
+
+  background: rgba(0,0,0,0.15);
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.bits-amount{
+  text-align:right;   /* numeri allineati in colonna */
+  font-family:'Anton', sans-serif;
+  font-size:1.25em;
+  letter-spacing:.5px;
+  white-space:nowrap;
+}
+
+.bits-desc{
+  font-size:0.9em; /* più grande */
+}
+
+.bits-desc::before{
+  content:"— ";
+  opacity:.9;
+}
+</style>
+</head>
+
+<body>
+
+<div id="bits-log">
+  <div id="bits-header">BITS</div>
+
+  <div id="bits-inner">
+    <div class="bits-row">
+      <div class="bits-amount">30</div>
+      <div class="bits-desc">Coro "Cairo Vattene"</div>
+    </div>
+
+    <div class="bits-row">
+      <div class="bits-amount">50</div>
+      <div class="bits-desc">Fischi</div>
+    </div>
+
+    <div class="bits-row">
+      <div class="bits-amount">100</div>
+      <div class="bits-desc">Legge Messaggio</div>
+    </div>
+
+    <div class="bits-row">
+      <div class="bits-amount">200</div>
+      <div class="bits-desc">Coro "Chi non salta è un gobbo"</div>
+    </div>
+
+    <div class="bits-row">
+      <div class="bits-amount">1000</div>
+      <div class="bits-desc">Messaggio Live per 3'</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

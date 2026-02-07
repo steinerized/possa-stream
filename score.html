@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+  /* PAGINA TRASPARENTE (fondamentale per Streamlabs) */
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    overflow: hidden;
+  }
+
+  /* CONTENITORE OVERLAY */
+  #overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+  }
+
+  /* CARD RISULTATO */
+#score {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  align-items: center;
+  text-align: center;
+
+  /* dimensioni */
+  width: calc(100% - 40px);   /* riempie quasi tutto */
+  max-width: 100%;
+  margin: 0 20px;
+  box-sizing: border-box;
+
+  /* padding e forma */
+  padding: 14px 18px;
+  border-radius: 18px;
+
+  /* grafica */
+  background: rgba(128, 0, 32, 0.80);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+
+  /* tipografia */
+  font-family: "Anton", sans-serif;
+  color: #fafafa;
+  text-shadow: 0 2px 6px rgba(0,0,0,.75);
+
+  /* animazioni */
+  transition: background .3s ease, opacity .3s ease;
+}
+
+  /* RIGA 1 (competizione) */
+  #comp {
+    font-size: clamp(14px, 2.4vw, 20px);
+    letter-spacing: .10em;
+    text-transform: uppercase;
+    opacity: .78;
+  }
+
+  /* prefissi stato */
+  #score[data-mode="LIVE"] #comp::before { content: "LIVE • "; color: #ff3b3b; }
+  #score[data-mode="NEXT"] #comp::before { content: "PROSSIMA • "; color: #ffd369; }
+  #score[data-mode="LAST"] #comp::before { content: "ULTIMO • "; color: #9ad0ff; }
+
+  /* RIGA 2 (squadre) */
+#line {
+  font-size: clamp(32px, 6.8vw, 54px);
+  line-height: 1.05;
+  font-weight: 700;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+}
+
+  /* RIGA 3 (data) */
+  #line2 {
+    font-size: clamp(18px, 3.2vw, 26px);
+    opacity: .9;
+  }
+
+  #score[data-mode="LIVE"] #comp::before {
+  content: "LIVE ";
+  color: #ff3b3b;
+}
+
+#score[data-mode="LIVE"] #comp::after {
+  content: "●";
+  color: #ff3b3b;
+  margin-left: 6px;
+  display: inline-block;
+  animation: livePulse 1.2s infinite ease-in-out;
+}
+  #score[data-mode="ERROR"] {
+    opacity: 0.7;
+  }
+
+@keyframes livePulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  50%  { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+
+  </style>
+</head>
+
+<body>
+
+  <div id="overlay">
+    <div id="score">
+      <div id="comp"></div>
+      <div id="line"></div>
+      <div id="line2"></div>
+    </div>
+  </div>
+
+<script src="score.js?v=999"></script>
+
+</body>
+</html>
