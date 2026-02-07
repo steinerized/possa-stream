@@ -152,16 +152,16 @@
   #score[data-mode="LAST"] #comp::before { color: #2b5d8a; }
 
   #score[data-mode="LIVE"] #comp::before{
-    content:"LIVE ";
-    color:#c01818;
-  }
-  #score[data-mode="LIVE"] #comp::after{
-    content:"●";
-    color:#c01818;
-    margin-left:6px;
-    display:inline-block;
-    animation: livePulse 1.2s infinite ease-in-out;
-  }
+  content:"LIVE ";
+  color:#c01818;
+  animation: liveGlow 1.6s ease-in-out infinite;
+}
+
+@keyframes liveGlow {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.55; }
+  100% { opacity: 1; }
+}
     
   #score[data-mode="LIVE"] #line {
   font-size: clamp(42px, 8vw, 68px);
