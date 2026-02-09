@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8" />
-<title>Overlay Frame</title>
+<title>Overlay con buco reale</title>
 
 <style>
 html,body{
@@ -18,60 +18,42 @@ html,body{
   overflow:hidden;
 }
 
-/* sfondo gradiente + pattern */
+/* SFONDO con buco reale */
 #background{
   position:absolute;
   inset:0;
-}
 
-#background::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: linear-gradient(
-    90deg,
-    #380303 0%,
-    #530707 50%,
-    #380303 100%
-  );
-}
+  /* gradiente */
+  background:
+    repeating-linear-gradient(
+      -35deg,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    linear-gradient(
+      90deg,
+      #380303 0%,
+      #530707 50%,
+      #380303 100%
+    );
 
-#background::after{
-  content:"";
-  position:absolute;
-  inset:0;
+  /* MASCHERA che crea il buco */
+  -webkit-mask:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0);
 
-  background: repeating-linear-gradient(
-    -35deg,
-    #ffffff 0px,
-    #ffffff 10px,
-    transparent 10px,
-    transparent 20px
-  );
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 
-  mix-blend-mode: overlay;
-  opacity:0.20;
-}
+  /* posizione del buco */
+  mask:
+    linear-gradient(#000 0 0) top left / 100% 100% no-repeat,
+    linear-gradient(#000 0 0) 
+      left 55px bottom 89px / 1411px 874px no-repeat;
 
-/* BUCO */
-#hole{
-  position:absolute;
-
-  width:1411px;
-  height:874px;
-
-  left:50%;
-  transform:translateX(-50%);
-  bottom:55px;
-
-  background:transparent;   /* niente bianco */
-
-  border-radius:2px;
-
-  /* bordo sottilissimo e stacco */
-  box-shadow:
-    inset 0 0 0 3px rgba(255,255,255,0.9),
-    inset 0 2px 8px rgba(0,0,0,.25);
+  mask-composite: exclude;
 }
 </style>
 </head>
@@ -79,7 +61,6 @@ html,body{
 <body>
 <div id="overlay">
   <div id="background"></div>
-  <div id="hole"></div>
 </div>
 </body>
 </html>
