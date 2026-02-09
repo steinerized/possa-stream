@@ -102,7 +102,7 @@
     opacity:.8;
   }
 
-  /* VIEWPORT ticker (2 slides) */
+  /* VIEWPORT ticker */
   #ticker-viewport{
     position: relative;
     flex: 1;
@@ -114,22 +114,26 @@
     inset:0;
     display:flex;
     flex-direction:column;
+
+    /* IMPORTANTI per l’animazione */
+    height: 200%;                 /* 2 slide */
     transform: translateY(0%);
     transition: transform 1000ms ease-in-out; /* 1s transizione */
     will-change: transform;
   }
 
   .slide{
-    height: 100%;
+    /* IMPORTANTI per l’animazione */
+    flex: 0 0 50%;                /* ciascuna slide = 50% della track (che è 200% viewport) => 100% viewport */
     display:flex;
     flex-direction:column;
-    gap:10px; /* come lista */
+    gap:10px;
   }
 
   /* RIGHE */
   .event-row{
     display:grid;
-    grid-template-columns: 170px 1fr; /* label + valore */
+    grid-template-columns: 170px 1fr;
     align-items:center;
     gap:8px;
 
@@ -156,14 +160,17 @@
     overflow:hidden;
     text-overflow:ellipsis;
     text-align:right;
+    min-height: 1.2em; /* così :empty funziona bene visivamente */
   }
 
-  /* niente trattino: rimosso ::before */
+  /* Placeholder figo (quando il contenuto è vuoto) */
+  .event-value:empty::after{
+    content:"In attesa…";
+    opacity:.55;
+  }
 
   /* flash breve */
-  .flash{
-    animation: flash .55s ease-out 1;
-  }
+  .flash{ animation: flash .55s ease-out 1; }
   @keyframes flash{
     0%   { filter: brightness(1); transform: translateY(0); }
     35%  { filter: brightness(1.35); transform: translateY(-1px); }
@@ -189,12 +196,12 @@
         <div class="slide" id="slide-a">
           <div class="event-row" id="row-sub">
             <div class="event-label">Ultima Sub</div>
-            <div class="event-value" id="last-sub">—</div>
+            <div class="event-value" id="last-sub"></div>
           </div>
 
           <div class="event-row" id="row-follow">
             <div class="event-label">Ultimo Follower</div>
-            <div class="event-value" id="last-follow">—</div>
+            <div class="event-value" id="last-follow"></div>
           </div>
         </div>
 
@@ -202,43 +209,36 @@
         <div class="slide" id="slide-b">
           <div class="event-row" id="row-bits">
             <div class="event-label">Ultimi Bits</div>
-            <div class="event-value" id="last-bits">—</div>
+            <div class="event-value" id="last-bits"></div>
           </div>
 
           <div class="event-row" id="row-dono">
             <div class="event-label">Ultima Donazione</div>
-            <div class="event-value" id="last-dono">—</div>
+            <div class="event-value" id="last-dono"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Socket.IO v2 (compatibile Streamlabs sockets) -->
+  <!-- Socket.IO v2 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <script>
     // =========================
     // CONFIG
     // =========================
     const SOCKET_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkM4RThDQjEwRTg5NzQwREJFRjJDQTcxMUU3MDYwNDQ4REMwNkVEMkVEMjM2NERDQjY3Q0M1QUFCRjY5RTA0MDEwQ0E1QjlFNUY2OUNGOERDMjRDMjMxNjk3NjM1QTEzREQ2RUQzQzdEMjExQ0UzNTBFOTU5OUEzRDY5RDhCOEMxMENCRTk4RTQ2NDIxMjdENjU1MDgzRkFDNzI3NzEwNTRBQjE5MTAxQTU5MkUyNEM5QUQ5NEY4ODQyMzlEQ0JFN0UxOUQ2MDkyMTFCNzM4MUVFOTkwMDJEODVCRkMzMkIxNUM5OEEyQzk4RDAwNTAzMzgyOTI3NzEzMTIiLCJyZWFkX29ubHkiOnRydWUsInByZXZlbnRfbWFzdGVyIjp0cnVlLCJzdHJlYW1sYWJzX2lkIjoiNzI1Njk5OTQyOTkwNTg0MjE3NiIsInlvdXR1YmVfaWQiOiJVQ3o5M1JwSDFEYU1rcnQ0RkZ1ZmllTHciLCJ0aWt0b2tfaWQiOiJiMzBkOGE3Zi1jNGVhLTU5NGQtYTZhOS1lNDEzOTlmZmE4OTIiLCJ0d2l0dGVyX2lkIjoiMTgzOTcxOTYzNDAwNzcyNDAzMiIsInR3aXRjaF9pZCI6IjgyNDAyNjg0MyIsImZhY2Vib29rX2lkIjoiMjE1NDgzNzAzODI1NjI3MiJ9.HroeRerSMYEPjN8fpOgetPZ6YhRxO97seXWjSDkfLEM";
-
-    // Rotazione: 60s di permanenza + 1s di transizione (già in CSS)
-    const HOLD_MS = 60000;
-
-    // highlight durata (ms)
+    const HOLD_MS = 60000;     // 60s permanenza
+    const TRANSITION_MS = 1000; // 1s transizione (coerente col CSS)
     const HOT_MS = 3600;
 
-    // =========================
     // localStorage keys
-    // =========================
-    const KEY_SUB   = "rg_last_sub";
-    const KEY_FOLLOW= "rg_last_follow";
-    const KEY_BITS  = "rg_last_bits";
-    const KEY_DONO  = "rg_last_dono";
+    const KEY_SUB    = "rg_last_sub";
+    const KEY_FOLLOW = "rg_last_follow";
+    const KEY_BITS   = "rg_last_bits";
+    const KEY_DONO   = "rg_last_dono";
 
-    // =========================
     // DOM
-    // =========================
     const track = document.getElementById("ticker-track");
 
     const elSub    = document.getElementById("last-sub");
@@ -251,9 +251,7 @@
     const rowBits   = document.getElementById("row-bits");
     const rowDono   = document.getElementById("row-dono");
 
-    // =========================
     // Helpers
-    // =========================
     const flash = (rowEl) => {
       rowEl.classList.remove("flash");
       void rowEl.offsetWidth;
@@ -287,15 +285,10 @@
       return p ? `${name} (${p})` : name;
     };
 
-    // niente trattino: usiamo placeholder vuoto e inizializziamo a stringa pulita
-    const normalizePlaceholder = (el) => {
-      if (el.textContent.trim() === "—") el.textContent = "";
-    };
-    [elSub, elFollow, elBits, elDono].forEach(normalizePlaceholder);
-
     const setTextAndStore = (el, key, text, rowEl) => {
-      el.textContent = text || "";
-      localStorage.setItem(key, el.textContent);
+      const clean = (text ?? "").toString().trim();
+      el.textContent = clean;         // vuoto => scatta placeholder CSS
+      localStorage.setItem(key, clean);
       flash(rowEl);
       setHot(rowEl, key);
     };
@@ -308,33 +301,31 @@
 
     const setBits = (amount, name, platform) => {
       const who = withPlatform(name, platform);
-      const txt = amount ? `${amount} • ${who}` : `${who}`;
+      const a = (amount ?? "").toString().trim();
+      const txt = a ? `${a} • ${who}` : who;
       setTextAndStore(elBits, KEY_BITS, txt, rowBits);
     };
 
     const setDono = (amountStr, name, platform) => {
       const who = withPlatform(name, platform);
-      const txt = amountStr ? `${amountStr} • ${who}` : `${who}`;
+      const a = (amountStr ?? "").toString().trim();
+      const txt = a ? `${a} • ${who}` : who;
       setTextAndStore(elDono, KEY_DONO, txt, rowDono);
     };
 
-    // =========================
-    // Restore + Fallback URL params
-    // =========================
-    const savedSub = localStorage.getItem(KEY_SUB);
-    const savedFollow = localStorage.getItem(KEY_FOLLOW);
-    const savedBits = localStorage.getItem(KEY_BITS);
-    const savedDono = localStorage.getItem(KEY_DONO);
+    // Restore
+    const savedSub = localStorage.getItem(KEY_SUB) || "";
+    const savedFollow = localStorage.getItem(KEY_FOLLOW) || "";
+    const savedBits = localStorage.getItem(KEY_BITS) || "";
+    const savedDono = localStorage.getItem(KEY_DONO) || "";
 
-    if (savedSub) elSub.textContent = savedSub;
-    if (savedFollow) elFollow.textContent = savedFollow;
-    if (savedBits) elBits.textContent = savedBits;
-    if (savedDono) elDono.textContent = savedDono;
+    elSub.textContent = savedSub;
+    elFollow.textContent = savedFollow;
+    elBits.textContent = savedBits;
+    elDono.textContent = savedDono;
 
-    // Fallback manuale:
-    // ?sub=Teo&tSub=Twitch&follow=Marco&tFollow=Kick&bits=500&bitsBy=Leo&tBits=Twitch&dono=5%E2%82%AC&donoBy=Anna&tDono=YouTube
+    // Fallback URL params (opzionale)
     const params = new URLSearchParams(location.search);
-
     if (!savedSub && params.get("sub")) setSub(params.get("sub"), params.get("tSub"));
     if (!savedFollow && params.get("follow")) setFollow(params.get("follow"), params.get("tFollow"));
     if (!savedBits && (params.get("bits") || params.get("bitsBy"))) setBits(params.get("bits"), params.get("bitsBy") || "Anonimo", params.get("tBits"));
@@ -343,16 +334,17 @@
     // =========================
     // Ticker 2+2
     // =========================
-    let slideIndex = 0; // 0 = slide A, 1 = slide B
+    let slideIndex = 0; // 0=slideA, 1=slideB
     const applySlide = () => {
-      track.style.transform = `translateY(${-100 * slideIndex}%)`;
+      // 0% o -50% (perché track è 200% e ogni slide è 50% della track)
+      track.style.transform = `translateY(${-50 * slideIndex}%)`;
     };
     applySlide();
 
     setInterval(() => {
       slideIndex = (slideIndex + 1) % 2;
       applySlide();
-    }, HOLD_MS);
+    }, HOLD_MS + TRANSITION_MS); // permanenza + tempo di transizione
 
     // =========================
     // Streamlabs Socket
@@ -423,18 +415,17 @@
           data.amount ??
           data.bits ??
           "";
-
         setBits(amount, name, platform);
         return;
       }
 
-      // DONATION
+      // DONATION / TIP
       if (type.includes("donation") || type.includes("tip")) {
         const amountRaw =
-          msg0?.amount ??
           msg0?.formatted_amount ??
-          data.amount ??
           data.formatted_amount ??
+          msg0?.amount ??
+          data.amount ??
           "";
 
         const currency =
@@ -442,22 +433,17 @@
           data.currency ??
           "";
 
-        // Se abbiamo già una stringa formattata, usiamola
         let amountStr = String(amountRaw || "").trim();
 
-        // Se è solo numero e abbiamo currency, proviamo a renderlo carino
+        // Se è un numero e c’è currency, format “safe”
         if (amountStr && /^[0-9]+(\.[0-9]+)?$/.test(amountStr) && currency) {
-          amountStr = `${amountStr} ${currency}`; // semplice e sicuro
+          amountStr = `${amountStr} ${currency}`;
         }
 
         setDono(amountStr, name, platform);
         return;
       }
     });
-
-    // Se vuoi debug:
-    // streamlabs.on("connect", () => console.log("✅ socket connesso"));
-    // streamlabs.on("connect_error", (e) => console.log("❌ connect_error", e));
   </script>
 </body>
 </html>
