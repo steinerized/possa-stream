@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Usa gli stessi font “da overlay” (Anton per titoli + Open Sans per testo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --granata-0:#380303;
+      --granata-1:#530707;
+      --white:rgba(255,255,255,.95);
+      --panel:rgba(10,10,10,.72);
+      --stroke:rgba(255,255,255,.18);
+      --shadow: rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ width:100%; height:100%; margin:0; background:transparent; overflow:hidden; }
+
+    /* Contenitore stile “card” tipo Bits */
+    .wrap{
+      width: 640px;           /* puoi adattare */
+      padding: 14px 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(90deg, var(--granata-0) 0%, var(--granata-1) 50%, var(--granata-0) 100%);
+      box-shadow: 0 14px 40px var(--shadow);
+      position:relative;
+    }
+
+    /* Velo scuro sopra per leggibilità (sempre stile bits-like) */
+    .wrap::before{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(0,0,0,.50), rgba(0,0,0,.30));
+      pointer-events:none;
+    }
+
+    /* Cornice sottile */
+    .wrap::after{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      pointer-events:none;
+    }
+
+    .content{ position:relative; z-index:1; }
+
+    .title{
+      font-family:"Anton", sans-serif;
+      font-size: 28px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height:1;
+      margin: 0 0 10px 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,.35);
+    }
+
+    .rows{
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .label{
+      font-family:"Open Sans", sans-serif;
+      font-weight:700;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: rgba(255,255,255,.85);
+      white-space:nowrap;
+      margin-right: 14px;
+    }
+
+    .value{
+      font-family:"Open Sans", sans-serif;
+      font-weight:700;
+      font-size: 18px;
+      color: var(--white);
+      text-shadow: 0 2px 10px rgba(0,0,0,.25);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 60%;
+      text-align:right;
+    }
+
+    /* Piccolo “blink” quando arriva un nuovo evento */
+    .flash{
+      animation: flash .6s ease-out 1;
+    }
+    @keyframes flash{
+      0%   { transform: translateY(0); filter: brightness(1); }
+      35%  { transform: translateY(-1px); filter: brightness(1.35); }
+      100% { transform: translateY(0); filter: brightness(1); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="content">
+      <div class="title">ULTIMI EVENTI</div>
+
+      <div class="rows">
+        <div class="row" id="rowSub">
+          <div class="label">Ultima Sub</div>
+          <div class="value" id="lastSub">—</div>
+        </div>
+
+        <div class="row" id="rowFollow">
+          <div class="label">Ultimo Follower</div>
+          <div class="value" id="lastFollow">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Persistenza =====
+    const KEY_SUB = "rg_lastSubName";
+    const KEY_FOLLOW = "rg_lastFollowName";
+
+    const elSub = document.getElementById("lastSub");
+    const elFollow = document.getElementById("lastFollow");
+    const rowSub = document.getElementById("rowSub");
+    const rowFollow = document.getElementById("rowFollow");
+
+    const savedSub = localStorage.getItem(KEY_SUB);
+    const savedFollow = localStorage.getItem(KEY_FOLLOW);
+    if (savedSub) elSub.textContent = savedSub;
+    if (savedFollow) elFollow.textContent = savedFollow;
+
+    const flash = (rowEl) => {
+      rowEl.classList.remove("flash");
+      // reflow for restart animation
+      void rowEl.offsetWidth;
+      rowEl.classList.add("flash");
+    };
+
+    const setSub = (name) => {
+      elSub.textContent = name;
+      localStorage.setItem(KEY_SUB, name);
+      flash(rowSub);
+    };
+
+    const setFollow = (name) => {
+      elFollow.textContent = name;
+      localStorage.setItem(KEY_FOLLOW, name);
+      flash(rowFollow);
+    };
+
+    // ===== Eventi Streamlabs =====
+    document.addEventListener("onEventReceived", (obj) => {
+      const event = obj?.detail?.event;
+      if (!event) return;
+
+      const type = event.type;
+      const name = event.name || event.username || event.user || "Anonimo";
+
+      // Sub types (Streamlabs può variare)
+      const isSub = [
+        "subscription",
+        "resub",
+        "subGift",
+        "subMysteryGift",
+        "membership" // in alcuni setup
+      ].includes(type);
+
+      if (isSub) {
+        setSub(name);
+        return;
+      }
+
+      // Follow types
+      const isFollow = [
+        "follow"
+      ].includes(type);
+
+      if (isFollow) {
+        setFollow(name);
+        return;
+      }
+    });
+  </script>
+</body>
+</html>
