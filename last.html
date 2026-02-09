@@ -3,147 +3,187 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Usa gli stessi font “da overlay” (Anton per titoli + Open Sans per testo) -->
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --granata-0:#380303;
-      --granata-1:#530707;
-      --white:rgba(255,255,255,.95);
-      --panel:rgba(10,10,10,.72);
-      --stroke:rgba(255,255,255,.18);
-      --shadow: rgba(0,0,0,.45);
-    }
+  @import url(https://fonts.googleapis.com/css2?family=Anton&family=Roboto:700&display=swap);
 
-    *{ box-sizing:border-box; }
-    html,body{ width:100%; height:100%; margin:0; background:transparent; overflow:hidden; }
+  * { box-sizing: border-box; }
 
-    /* Contenitore stile “card” tipo Bits */
-    .wrap{
-      width: 640px;           /* puoi adattare */
-      padding: 14px 16px;
-      border-radius: 18px;
-      background:
-        linear-gradient(90deg, var(--granata-0) 0%, var(--granata-1) 50%, var(--granata-0) 100%);
-      box-shadow: 0 14px 40px var(--shadow);
-      position:relative;
-    }
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
 
-    /* Velo scuro sopra per leggibilità (sempre stile bits-like) */
-    .wrap::before{
-      content:"";
-      position:absolute; inset:0;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(0,0,0,.50), rgba(0,0,0,.30));
-      pointer-events:none;
-    }
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.5em;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 0 0 2px #000;
+    background: transparent;
+  }
 
-    /* Cornice sottile */
-    .wrap::after{
-      content:"";
-      position:absolute; inset:0;
-      border-radius: 18px;
-      border: 1px solid var(--stroke);
-      pointer-events:none;
-    }
+  /* CONTENITORE (UGUALE A BITS) */
+  #events-log{
+    position: absolute;
+    inset: 0;
+    padding: 12px;
+    background: rgba(88,7,7,0.7);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .content{ position:relative; z-index:1; }
+  /* BORDO (UGUALE A BITS) */
+  #events-log::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:14px;
+    padding:2px;
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.95),
+      rgba(255,255,255,0.45),
+      rgba(255,255,255,0.95)
+    );
 
-    .title{
-      font-family:"Anton", sans-serif;
-      font-size: 28px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--white);
-      line-height:1;
-      margin: 0 0 10px 0;
-      text-shadow: 0 2px 10px rgba(0,0,0,.35);
-    }
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
 
-    .rows{
-      display:flex;
-      flex-direction:column;
-      gap: 8px;
-    }
+    box-shadow: 0 0 12px rgba(255,255,255,0.25);
+    pointer-events:none;
+  }
 
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.28);
-      border: 1px solid rgba(255,255,255,.10);
-    }
+  /* HEADER (UGUALE A BITS) */
+  #events-header{
+    font-family:'Anton', sans-serif;
+    font-size:1.4em;
+    letter-spacing:1px;
 
-    .label{
-      font-family:"Open Sans", sans-serif;
-      font-weight:700;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      color: rgba(255,255,255,.85);
-      white-space:nowrap;
-      margin-right: 14px;
-    }
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.95),
+      rgba(240,240,240,0.95)
+    );
 
-    .value{
-      font-family:"Open Sans", sans-serif;
-      font-weight:700;
-      font-size: 18px;
-      color: var(--white);
-      text-shadow: 0 2px 10px rgba(0,0,0,.25);
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      max-width: 60%;
-      text-align:right;
-    }
+    color:#831d1c;
+    text-shadow:none;
 
-    /* Piccolo “blink” quando arriva un nuovo evento */
-    .flash{
-      animation: flash .6s ease-out 1;
-    }
-    @keyframes flash{
-      0%   { transform: translateY(0); filter: brightness(1); }
-      35%  { transform: translateY(-1px); filter: brightness(1.35); }
-      100% { transform: translateY(0); filter: brightness(1); }
-    }
+    padding:6px 10px;
+    margin-bottom:10px;
+    border-radius:8px;
+    text-align:center;
+    position:relative;
+  }
+
+  #events-header::after{
+    content:"";
+    position:absolute;
+    left:10%;
+    right:10%;
+    bottom:-3px;
+    height:2px;
+
+    background: linear-gradient(
+      to right,
+      rgba(255,255,255,0),
+      rgba(255,255,255,0.9),
+      rgba(255,255,255,0)
+    );
+
+    border-radius:2px;
+    opacity:.8;
+  }
+
+  /* LISTA (UGUALE A BITS) */
+  #events-inner{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  /* RIGHE (UGUALE A BITS, ma adattate a "label" + "nome") */
+  .event-row{
+    display:grid;
+    grid-template-columns: 160px 1fr; /* colonna label + colonna nome */
+    align-items:center;
+    gap:8px;
+
+    padding:8px 10px;
+    border-radius:10px;
+
+    background: rgba(0,0,0,0.15);
+    border:1px solid rgba(255,255,255,0.12);
+  }
+
+  .event-label{
+    text-align:left;
+    font-family:'Anton', sans-serif;
+    font-size:1.05em;
+    letter-spacing:.5px;
+    white-space:nowrap;
+  }
+
+  .event-value{
+    font-size:0.95em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    text-align:right;
+  }
+
+  .event-value::before{
+    content:"— ";
+    opacity:.9;
+  }
+
+  /* flash stile “aggiornamento” */
+  .flash{
+    animation: flash .55s ease-out 1;
+  }
+  @keyframes flash{
+    0%   { filter: brightness(1); transform: translateY(0); }
+    35%  { filter: brightness(1.35); transform: translateY(-1px); }
+    100% { filter: brightness(1); transform: translateY(0); }
+  }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="content">
-      <div class="title">ULTIMI EVENTI</div>
+  <div id="events-log">
+    <div id="events-header">ULTIMI EVENTI</div>
 
-      <div class="rows">
-        <div class="row" id="rowSub">
-          <div class="label">Ultima Sub</div>
-          <div class="value" id="lastSub">—</div>
-        </div>
+    <div id="events-inner">
+      <div class="event-row" id="row-sub">
+        <div class="event-label">Ultima Sub</div>
+        <div class="event-value" id="last-sub">—</div>
+      </div>
 
-        <div class="row" id="rowFollow">
-          <div class="label">Ultimo Follower</div>
-          <div class="value" id="lastFollow">—</div>
-        </div>
+      <div class="event-row" id="row-follow">
+        <div class="event-label">Ultimo Follower</div>
+        <div class="event-value" id="last-follow">—</div>
       </div>
     </div>
   </div>
 
   <script>
     // ===== Persistenza =====
-    const KEY_SUB = "rg_lastSubName";
-    const KEY_FOLLOW = "rg_lastFollowName";
+    const KEY_SUB = "rg_last_sub";
+    const KEY_FOLLOW = "rg_last_follow";
 
-    const elSub = document.getElementById("lastSub");
-    const elFollow = document.getElementById("lastFollow");
-    const rowSub = document.getElementById("rowSub");
-    const rowFollow = document.getElementById("rowFollow");
+    const elSub = document.getElementById("last-sub");
+    const elFollow = document.getElementById("last-follow");
+    const rowSub = document.getElementById("row-sub");
+    const rowFollow = document.getElementById("row-follow");
 
+    // restore
     const savedSub = localStorage.getItem(KEY_SUB);
     const savedFollow = localStorage.getItem(KEY_FOLLOW);
     if (savedSub) elSub.textContent = savedSub;
@@ -151,8 +191,7 @@
 
     const flash = (rowEl) => {
       rowEl.classList.remove("flash");
-      // reflow for restart animation
-      void rowEl.offsetWidth;
+      void rowEl.offsetWidth; // restart animation
       rowEl.classList.add("flash");
     };
 
@@ -176,13 +215,13 @@
       const type = event.type;
       const name = event.name || event.username || event.user || "Anonimo";
 
-      // Sub types (Streamlabs può variare)
+      // Subs: Streamlabs può usare tipi diversi a seconda della piattaforma/integrazione
       const isSub = [
         "subscription",
         "resub",
         "subGift",
         "subMysteryGift",
-        "membership" // in alcuni setup
+        "membership"
       ].includes(type);
 
       if (isSub) {
@@ -190,12 +229,8 @@
         return;
       }
 
-      // Follow types
-      const isFollow = [
-        "follow"
-      ].includes(type);
-
-      if (isFollow) {
+      // Follow
+      if (type === "follow") {
         setFollow(name);
         return;
       }
