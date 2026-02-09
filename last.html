@@ -102,17 +102,17 @@
     opacity:.8;
   }
 
-  /* LISTA (UGUALE A BITS) */
+  /* LISTA */
   #events-inner{
     display:flex;
     flex-direction:column;
     gap:10px;
   }
 
-  /* RIGHE (UGUALE A BITS, ma adattate a "label" + "nome") */
+  /* RIGHE */
   .event-row{
     display:grid;
-    grid-template-columns: 160px 1fr; /* colonna label + colonna nome */
+    grid-template-columns: 160px 1fr; /* label + valore */
     align-items:center;
     gap:8px;
 
@@ -121,6 +121,8 @@
 
     background: rgba(0,0,0,0.15);
     border:1px solid rgba(255,255,255,0.12);
+
+    transition: filter .25s ease, box-shadow .25s ease, border-color .25s ease;
   }
 
   .event-label{
@@ -144,7 +146,7 @@
     opacity:.9;
   }
 
-  /* flash stile “aggiornamento” */
+  /* flash breve */
   .flash{
     animation: flash .55s ease-out 1;
   }
@@ -152,6 +154,13 @@
     0%   { filter: brightness(1); transform: translateY(0); }
     35%  { filter: brightness(1.35); transform: translateY(-1px); }
     100% { filter: brightness(1); transform: translateY(0); }
+  }
+
+  /* highlight “live” più evidente per qualche secondo */
+  .hot{
+    filter: brightness(1.18);
+    border-color: rgba(255,255,255,0.28);
+    box-shadow: 0 0 18px rgba(255,255,255,0.18);
   }
   </style>
 </head>
@@ -163,79 +172,189 @@
     <div id="events-inner">
       <div class="event-row" id="row-sub">
         <div class="event-label">Ultima Sub</div>
-        <div class="event-value" id="last-sub"></div>
+        <div class="event-value" id="last-sub">—</div>
       </div>
 
       <div class="event-row" id="row-follow">
         <div class="event-label">Ultimo Follower</div>
-        <div class="event-value" id="last-follow"></div>
+        <div class="event-value" id="last-follow">—</div>
       </div>
     </div>
   </div>
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-<script>
-  // ====== METTI QUI IL TUO SOCKET TOKEN STREAMLABS ======
-  const SOCKET_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkM4RThDQjEwRTg5NzQwREJFRjJDQTcxMUU3MDYwNDQ4REMwNkVEMkVEMjM2NERDQjY3Q0M1QUFCRjY5RTA0MDEwQ0E1QjlFNUY2OUNGOERDMjRDMjMxNjk3NjM1QTEzREQ2RUQzQzdEMjExQ0UzNTBFOTU5OUEzRDY5RDhCOEMxMENCRTk4RTQ2NDIxMjdENjU1MDgzRkFDNzI3NzEwNTRBQjE5MTAxQTU5MkUyNEM5QUQ5NEY4ODQyMzlEQ0JFN0UxOUQ2MDkyMTFCNzM4MUVFOTkwMDJEODVCRkMzMkIxNUM5OEEyQzk4RDAwNTAzMzgyOTI3NzEzMTIiLCJyZWFkX29ubHkiOnRydWUsInByZXZlbnRfbWFzdGVyIjp0cnVlLCJzdHJlYW1sYWJzX2lkIjoiNzI1Njk5OTQyOTkwNTg0MjE3NiIsInlvdXR1YmVfaWQiOiJVQ3o5M1JwSDFEYU1rcnQ0RkZ1ZmllTHciLCJ0aWt0b2tfaWQiOiJiMzBkOGE3Zi1jNGVhLTU5NGQtYTZhOS1lNDEzOTlmZmE4OTIiLCJ0d2l0dGVyX2lkIjoiMTgzOTcxOTYzNDAwNzcyNDAzMiIsInR3aXRjaF9pZCI6IjgyNDAyNjg0MyIsImZhY2Vib29rX2lkIjoiMjE1NDgzNzAzODI1NjI3MiJ9.HroeRerSMYEPjN8fpOgetPZ6YhRxO97seXWjSDkfLEM";
+  <!-- Socket.IO v2 (compatibile Streamlabs sockets) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script>
+    // =========================
+    // CONFIG
+    // =========================
+    const SOCKET_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkM4RThDQjEwRTg5NzQwREJFRjJDQTcxMUU3MDYwNDQ4REMwNkVEMkVEMjM2NERDQjY3Q0M1QUFCRjY5RTA0MDEwQ0E1QjlFNUY2OUNGOERDMjRDMjMxNjk3NjM1QTEzREQ2RUQzQzdEMjExQ0UzNTBFOTU5OUEzRDY5RDhCOEMxMENCRTk4RTQ2NDIxMjdENjU1MDgzRkFDNzI3NzEwNTRBQjE5MTAxQTU5MkUyNEM5QUQ5NEY4ODQyMzlEQ0JFN0UxOUQ2MDkyMTFCNzM4MUVFOTkwMDJEODVCRkMzMkIxNUM5OEEyQzk4RDAwNTAzMzgyOTI3NzEzMTIiLCJyZWFkX29ubHkiOnRydWUsInByZXZlbnRfbWFzdGVyIjp0cnVlLCJzdHJlYW1sYWJzX2lkIjoiNzI1Njk5OTQyOTkwNTg0MjE3NiIsInlvdXR1YmVfaWQiOiJVQ3o5M1JwSDFEYU1rcnQ0RkZ1ZmllTHciLCJ0aWt0b2tfaWQiOiJiMzBkOGE3Zi1jNGVhLTU5NGQtYTZhOS1lNDEzOTlmZmE4OTIiLCJ0d2l0dGVyX2lkIjoiMTgzOTcxOTYzNDAwNzcyNDAzMiIsInR3aXRjaF9pZCI6IjgyNDAyNjg0MyIsImZhY2Vib29rX2lkIjoiMjE1NDgzNzAzODI1NjI3MiJ9.HroeRerSMYEPjN8fpOgetPZ6YhRxO97seXWjSDkfLEM";
 
-  const KEY_SUB = "rg_last_sub";
-  const KEY_FOLLOW = "rg_last_follow";
+    // localStorage keys
+    const KEY_SUB = "rg_last_sub";
+    const KEY_FOLLOW = "rg_last_follow";
 
-  const elSub = document.getElementById("last-sub");
-  const elFollow = document.getElementById("last-follow");
-  const rowSub = document.getElementById("row-sub");
-  const rowFollow = document.getElementById("row-follow");
+    // highlight durata (ms)
+    const HOT_MS = 3600;
 
-  // restore
-  const savedSub = localStorage.getItem(KEY_SUB);
-  const savedFollow = localStorage.getItem(KEY_FOLLOW);
-  if (savedSub) elSub.textContent = savedSub;
-  if (savedFollow) elFollow.textContent = savedFollow;
+    // =========================
+    // DOM
+    // =========================
+    const elSub = document.getElementById("last-sub");
+    const elFollow = document.getElementById("last-follow");
+    const rowSub = document.getElementById("row-sub");
+    const rowFollow = document.getElementById("row-follow");
 
-  const flash = (rowEl) => { rowEl.classList.remove("flash"); void rowEl.offsetWidth; rowEl.classList.add("flash"); };
-  const setSub = (name) => { elSub.textContent = name; localStorage.setItem(KEY_SUB, name); flash(rowSub); };
-  const setFollow = (name) => { elFollow.textContent = name; localStorage.setItem(KEY_FOLLOW, name); flash(rowFollow); };
+    // =========================
+    // Helpers
+    // =========================
+    const flash = (rowEl) => {
+      rowEl.classList.remove("flash");
+      void rowEl.offsetWidth; // restart animation
+      rowEl.classList.add("flash");
+    };
 
-  // Connect to Streamlabs sockets (doc ufficiale)
-  const streamlabs = io(`https://sockets.streamlabs.com?token=${SOCKET_TOKEN}`);
+    let hotTimerSub = null;
+    let hotTimerFollow = null;
 
-  // Streamlabs manda gli eventi dentro "event"
-  streamlabs.on("event", (payload) => {
-    // payload.event = stringa JSON (spesso), oppure oggetto: normalizziamo
-    let data = payload && payload.event ? payload.event : payload;
-    if (!data) return;
+    const setHot = (rowEl, which) => {
+      rowEl.classList.add("hot");
+      if (which === "sub") {
+        if (hotTimerSub) clearTimeout(hotTimerSub);
+        hotTimerSub = setTimeout(() => rowEl.classList.remove("hot"), HOT_MS);
+      } else {
+        if (hotTimerFollow) clearTimeout(hotTimerFollow);
+        hotTimerFollow = setTimeout(() => rowEl.classList.remove("hot"), HOT_MS);
+      }
+    };
 
-    if (typeof data === "string") {
-      try { data = JSON.parse(data); } catch(e) { return; }
-    }
+    const formatPlatform = (p) => {
+      if (!p) return "";
+      const s = String(p).trim();
+      if (!s) return "";
+      // normalizza un minimo
+      const low = s.toLowerCase();
+      if (low.includes("twitch")) return "Twitch";
+      if (low.includes("youtube")) return "YouTube";
+      if (low.includes("kick")) return "Kick";
+      if (low.includes("tiktok")) return "TikTok";
+      if (low.includes("facebook")) return "Facebook";
+      if (low.includes("trovo")) return "Trovo";
+      if (low.includes("dlive")) return "DLive";
+      // fallback: prima lettera maiuscola
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    };
 
-    // In genere data.type = "follow" | "subscription" ecc.
-    const type = String(data.type || "").toLowerCase();
+    const withPlatform = (name, platform) => {
+      const p = formatPlatform(platform);
+      return p ? `${name} (${p})` : name;
+    };
 
-    // Il nome può stare in posti diversi a seconda dell’evento
-    const name =
-      data.message?.[0]?.name ||
-      data.name ||
-      data.username ||
-      data.user ||
-      "Anonimo";
+    const setSub = (name, platform) => {
+      const txt = withPlatform(name, platform);
+      elSub.textContent = txt;
+      localStorage.setItem(KEY_SUB, txt);
+      flash(rowSub);
+      setHot(rowSub, "sub");
+    };
 
-    // follow
-    if (type.includes("follow")) {
-      setFollow(name);
-      return;
-    }
+    const setFollow = (name, platform) => {
+      const txt = withPlatform(name, platform);
+      elFollow.textContent = txt;
+      localStorage.setItem(KEY_FOLLOW, txt);
+      flash(rowFollow);
+      setHot(rowFollow, "follow");
+    };
 
-    // sub / resub / gift
-    if (type.includes("sub") || type.includes("subscription") || type.includes("resub") || type.includes("member")) {
-      setSub(name);
-      return;
-    }
-  });
+    // =========================
+    // Restore + Fallback URL params
+    // =========================
+    const savedSub = localStorage.getItem(KEY_SUB);
+    const savedFollow = localStorage.getItem(KEY_FOLLOW);
+    if (savedSub) elSub.textContent = savedSub;
+    if (savedFollow) elFollow.textContent = savedFollow;
 
-  // (opzionale) log di debug
-  streamlabs.on("connect", () => console.log("✅ Streamlabs socket connesso"));
-  streamlabs.on("disconnect", () => console.log("⚠️ Streamlabs socket disconnesso"));
-</script>
+    // Fallback manuale: ?sub=Teo&tSub=Twitch&follow=Marco&tFollow=Kick
+    const params = new URLSearchParams(location.search);
+    const qSub = params.get("sub");
+    const qSubP = params.get("tSub");
+    const qFollow = params.get("follow");
+    const qFollowP = params.get("tFollow");
+
+    // Applica solo se non hai già un valore salvato (così non ti sovrascrive lo storico)
+    if (!savedSub && qSub) setSub(qSub, qSubP);
+    if (!savedFollow && qFollow) setFollow(qFollow, qFollowP);
+
+    // =========================
+    // Streamlabs Socket
+    // =========================
+    const url = "https://sockets.streamlabs.com";
+    const qs = "?token=" + encodeURIComponent(SOCKET_TOKEN);
+
+    const streamlabs = io(url + qs, {
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+    });
+
+    // Parsing robusto eventi
+    streamlabs.on("event", (payload) => {
+      let data = payload && payload.event ? payload.event : payload;
+      if (!data) return;
+
+      if (typeof data === "string") {
+        try { data = JSON.parse(data); }
+        catch(e) { return; }
+      }
+
+      const type = String(data.type || "").toLowerCase();
+
+      // nome e piattaforma possono stare in più punti
+      const msg0 = Array.isArray(data.message) ? data.message[0] : null;
+
+      const name =
+        msg0?.name ||
+        msg0?.username ||
+        data.name ||
+        data.username ||
+        data.user ||
+        "Anonimo";
+
+      const platform =
+        data.platform ||
+        msg0?.platform ||
+        msg0?.source ||
+        data.source ||
+        data.for ||
+        "";
+
+      // FOLLOW
+      if (type.includes("follow")) {
+        setFollow(name, platform);
+        return;
+      }
+
+      // SUB / MEMBER
+      // (copriamo il più possibile perché Streamlabs può variare i type)
+      const isSub =
+        type.includes("subscription") ||
+        type.includes("resub") ||
+        type.includes("subgift") ||
+        type.includes("submysterygift") ||
+        type.includes("sub") ||
+        type.includes("member") ||
+        type.includes("membership");
+
+      if (isSub) {
+        setSub(name, platform);
+        return;
+      }
+    });
+
+    // (facoltativo) log connessione
+    // streamlabs.on("connect", () => console.log("✅ Streamlabs socket connesso"));
+    // streamlabs.on("connect_error", (e) => console.log("❌ connect_error", e));
+  </script>
 </body>
 </html>
