@@ -76,27 +76,48 @@ html,body{
   border-radius:2px;
 }
 
-/* divisori */
-.divider{
+#cross{
   position:absolute;
-  background:var(--lineColor);
-  box-shadow:0 0 8px rgba(0,0,0,.35);
+  left: var(--holeL);
+  bottom: var(--holeB);
+  width: var(--holeW);
+  height: var(--holeH);
+  pointer-events:none;
+
+  /* ombra unica */
+  filter: drop-shadow(0 0 8px rgba(0,0,0,.35));
 }
 
-/* verticale */
-#divider-v{
-  width:var(--divider);
-  height:var(--holeH);
-  left: calc(var(--holeL) + (var(--holeW) / 2) - (var(--divider) / 2));
-  bottom:var(--holeB);
+/* barra verticale */
+#cross::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width: var(--divider);
+  left: calc(50% - (var(--divider) / 2));
+
+  background: linear-gradient(
+    180deg,
+    #831d1c 0%,
+    #5f0a0a 100%
+  );
 }
 
-/* orizzontale */
-#divider-h{
-  width:var(--holeW);
-  height:var(--divider);
-  left:var(--holeL);
-  bottom: calc(var(--holeB) + (var(--holeH) / 2) - (var(--divider) / 2));
+/* barra orizzontale */
+#cross::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  height: var(--divider);
+  top: calc(50% - (var(--divider) / 2));
+
+  background: linear-gradient(
+    180deg,
+    #831d1c 0%,
+    #5f0a0a 100%
+  );
 }
 </style>
 </head>
@@ -109,8 +130,7 @@ html,body{
   <div class="panel bottom"></div>
 
   <div id="outline"></div>
-  <div id="divider-v" class="divider"></div>
-  <div id="divider-h" class="divider"></div>
+  <div id="cross"></div>
 </div>
 </body>
 </html>
