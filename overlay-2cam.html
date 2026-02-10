@@ -2,15 +2,12 @@
 <html lang="it">
 <head>
 <meta charset="utf-8" />
-<title>Overlay 2 Cam</title>
+<title>Overlay 2 Cam (divider senza outline)</title>
 
 <style>
-html,body{
-  margin:0;
-  padding:0;
-  background:transparent;
-}
+html,body{ margin:0; padding:0; background:transparent; }
 
+/* ===== PARAMETRI ===== */
 :root{
   --W:1920px;
   --H:1080px;
@@ -21,15 +18,21 @@ html,body{
   --holeL:55px;
   --holeB:89px;
 
-  --divider:30px;
+  --divider:30px;          /* spessore divisore */
+  --stroke:3px;            /* bordo bianco SOLO riquadri */
 
-  --lineColor:rgba(255,255,255,0.95);
+  --strokeColor: rgba(255,255,255,0.95);
+
+  --dividerFill: linear-gradient(180deg, #831d1c 0%, #5f0a0a 100%);
 }
 
-/* coordinate */
+/* coordinate utili */
 :root{
   --holeT: calc(var(--H) - var(--holeH) - var(--holeB));
   --holeR: calc(var(--W) - var(--holeW) - var(--holeL));
+
+  /* larghezza dei 2 riquadri */
+  --cellW: calc((var(--holeW) - var(--divider)) / 2);
 }
 
 #overlay{
@@ -39,9 +42,11 @@ html,body{
   overflow:hidden;
 }
 
-/* sfondo */
+/* ===== SFONDO (4 pannelli attorno al buco) ===== */
 .panel{
   position:absolute;
+  z-index:1;
+
   background-image:
     repeating-linear-gradient(
       -35deg,
@@ -51,42 +56,82 @@ html,body{
       transparent 20px
     ),
     linear-gradient(90deg,#380303 0%,#530707 50%,#380303 100%);
+
   background-size:1920px 1080px;
+  background-repeat:no-repeat;
 }
 
 /* pannelli */
-.top{ left:0; top:0; width:1920px; height:var(--holeT); }
-.bottom{ left:0; bottom:0; width:1920px; height:var(--holeB); }
-.left{ left:0; top:var(--holeT); width:var(--holeL); height:var(--holeH); }
-.right{ left:calc(var(--holeL) + var(--holeW)); top:var(--holeT); width:var(--holeR); height:var(--holeH); }
+.top{
+  left:0; top:0; width:1920px; height:var(--holeT);
+  background-position: 0 0;
+}
+.bottom{
+  left:0; bottom:0; width:1920px; height:var(--holeB);
+  background-position: 0 calc(-1 * (1080px - var(--holeB)));
+}
+.left{
+  left:0; top:var(--holeT); width:var(--holeL); height:var(--holeH);
+  background-position: 0 calc(-1 * var(--holeT));
+}
+.right{
+  left:calc(var(--holeL) + var(--holeW));
+  top:var(--holeT);
+  width:var(--holeR);
+  height:var(--holeH);
+  background-position: calc(-1 * (var(--holeL) + var(--holeW))) calc(-1 * var(--holeT));
+}
 
-/* bordo buco */
-#outline{
+/* ===== GRUPPO BUCO (2 cornici) ===== */
+#hole{
   position:absolute;
   left:var(--holeL);
   bottom:var(--holeB);
   width:var(--holeW);
   height:var(--holeH);
+  z-index:2;
   pointer-events:none;
-
-  box-shadow:
-    0 0 0 3px var(--lineColor) inset,
-    0 10px 25px rgba(0,0,0,0.35);
-
-  border-radius:2px;
 }
 
-/* divisore verticale */
-#divider-v{
+/* cornici: SOLO qui c’è il bordo bianco */
+.frame{
   position:absolute;
-  width:var(--divider);
+  top:0;
+  height:var(--holeH);
+  width:var(--cellW);
+
+  box-shadow:
+    0 0 0 var(--stroke) var(--strokeColor) inset,
+    0 10px 25px rgba(0,0,0,0.20);
+
+  border-radius:2px;
+  background: transparent;
+}
+
+#leftWin{ left:0; }
+#rightWin{ right:0; }
+
+/* ===== DIVISORE (SOPRA, SENZA OUTLINE) ===== */
+#divider{
+  position:absolute;
+  left:var(--holeL);
+  bottom:var(--holeB);
+  width:var(--holeW);
   height:var(--holeH);
 
-  left: calc(var(--holeL) + (var(--holeW) / 2) - (var(--divider) / 2));
-  bottom:var(--holeB);
+  z-index:3;
+  pointer-events:none;
 
-  background:var(--lineColor);
-  box-shadow:0 0 8px rgba(0,0,0,.35);
+  filter: drop-shadow(0 0 8px rgba(0,0,0,.35));
+}
+
+#divider::before{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  width: var(--divider);
+  left: calc(50% - (var(--divider) / 2));
+  background: var(--dividerFill);
 }
 </style>
 </head>
@@ -98,8 +143,12 @@ html,body{
   <div class="panel right"></div>
   <div class="panel bottom"></div>
 
-  <div id="outline"></div>
-  <div id="divider-v"></div>
+  <div id="hole">
+    <div id="leftWin" class="frame"></div>
+    <div id="rightWin" class="frame"></div>
+  </div>
+
+  <div id="divider"></div>
 </div>
 </body>
 </html>
