@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Overlay 2 Cam</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  background:transparent;
+}
+
+/* DIMENSIONI */
+:root{
+  --W:1920px;
+  --H:1080px;
+
+  --holeW:1411px;
+  --holeH:874px;
+
+  --holeL:55px;
+  --holeB:89px;
+
+  --lineColor:rgba(255,255,255,0.95);
+}
+
+/* CANVAS */
+#overlay{
+  width:var(--W);
+  height:var(--H);
+  position:relative;
+  overflow:hidden;
+}
+
+/* SFONDO */
+.panel{
+  position:absolute;
+  background-image:
+    repeating-linear-gradient(
+      -35deg,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    linear-gradient(90deg,#380303 0%,#530707 50%,#380303 100%);
+  background-size:1920px 1080px;
+}
+
+/* coordinate utili */
+:root{
+  --holeT: calc(1080px - 874px - 89px);
+  --holeR: calc(1920px - 1411px - 55px);
+}
+
+/* pannelli */
+.top{ left:0; top:0; width:1920px; height:var(--holeT); }
+.bottom{ left:0; bottom:0; width:1920px; height:89px; background-position:0 calc(-1080px + 89px); }
+.left{ left:0; top:var(--holeT); width:55px; height:874px; background-position:0 calc(-1 * var(--holeT)); }
+.right{ left:calc(55px + 1411px); top:var(--holeT); width:var(--holeR); height:874px; }
+
+/* bordo esterno */
+#outline{
+  position:absolute;
+  left:55px;
+  bottom:89px;
+  width:1411px;
+  height:874px;
+  pointer-events:none;
+  box-shadow:
+    0 0 0 3px var(--lineColor) inset,
+    0 10px 25px rgba(0,0,0,0.35);
+  border-radius:2px;
+}
+
+/* divisore verticale */
+#divider-v{
+  position:absolute;
+  width:5px;
+  height:874px;
+  left: calc(55px + (1411px / 2) - 2.5px);
+  bottom:89px;
+  background:var(--lineColor);
+  box-shadow:0 0 6px rgba(0,0,0,.35);
+}
+</style>
+</head>
+
+<body>
+<div id="overlay">
+  <div class="panel top"></div>
+  <div class="panel left"></div>
+  <div class="panel right"></div>
+  <div class="panel bottom"></div>
+
+  <div id="outline"></div>
+  <div id="divider-v"></div>
+</div>
+</body>
+</html>
