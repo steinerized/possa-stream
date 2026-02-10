@@ -77,13 +77,17 @@ html,body{
 /* divisori */
 .divider{
   position:absolute;
-  background:var(--lineColor);
+  background: linear-gradient(
+    180deg,
+    #831d1c 0%,
+    #5f0a0a 100%
+  );
   box-shadow:0 0 6px rgba(0,0,0,.35);
 }
 
 /* verticale */
 #divider-v{
-  width:5px;
+  width:30px;
   height:874px;
   left: calc(55px + (1411px / 2) - 2.5px);
   bottom:89px;
@@ -92,7 +96,7 @@ html,body{
 /* orizzontale */
 #divider-h{
   width:1411px;
-  height:5px;
+  height:30px;
   left:55px;
   bottom: calc(89px + (874px / 2) - 2.5px);
 }
