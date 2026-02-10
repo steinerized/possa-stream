@@ -11,6 +11,7 @@ html,body{
   background:transparent;
 }
 
+/* PARAMETRI */
 :root{
   --W:1920px;
   --H:1080px;
@@ -22,11 +23,12 @@ html,body{
   --holeB:89px;
 
   --divider:30px;
+  --stroke:3px;
 
   --lineColor:rgba(255,255,255,0.95);
 }
 
-/* coordinate */
+/* coordinate calcolate */
 :root{
   --holeT: calc(var(--H) - var(--holeH) - var(--holeB));
   --holeR: calc(var(--W) - var(--holeW) - var(--holeL));
@@ -39,9 +41,11 @@ html,body{
   overflow:hidden;
 }
 
-/* sfondo */
+/* SFONDO */
 .panel{
   position:absolute;
+  z-index:1;
+
   background-image:
     repeating-linear-gradient(
       -35deg,
@@ -50,41 +54,32 @@ html,body{
       transparent 10px,
       transparent 20px
     ),
-    linear-gradient(90deg,#380303 0%,#530707 50%,#380303 100%);
+    linear-gradient(
+      90deg,
+      #380303 0%,
+      #530707 50%,
+      #380303 100%
+    );
+
   background-size:1920px 1080px;
 }
 
-/* pannelli */
+/* pannelli attorno al buco */
 .top{ left:0; top:0; width:1920px; height:var(--holeT); }
 .bottom{ left:0; bottom:0; width:1920px; height:var(--holeB); }
 .left{ left:0; top:var(--holeT); width:var(--holeL); height:var(--holeH); }
 .right{ left:calc(var(--holeL) + var(--holeW)); top:var(--holeT); width:var(--holeR); height:var(--holeH); }
 
-/* bordo */
-#outline{
+/* CROCE (sotto il bordo) */
+#cross{
   position:absolute;
   left:var(--holeL);
   bottom:var(--holeB);
   width:var(--holeW);
   height:var(--holeH);
   pointer-events:none;
+  z-index:2;
 
-  box-shadow:
-    0 0 0 3px var(--lineColor) inset,
-    0 10px 25px rgba(0,0,0,0.35);
-
-  border-radius:2px;
-}
-
-#cross{
-  position:absolute;
-  left: var(--holeL);
-  bottom: var(--holeB);
-  width: var(--holeW);
-  height: var(--holeH);
-  pointer-events:none;
-
-  /* ombra unica */
   filter: drop-shadow(0 0 8px rgba(0,0,0,.35));
 }
 
@@ -92,9 +87,11 @@ html,body{
 #cross::before{
   content:"";
   position:absolute;
-  top:0;
-  bottom:0;
-  width: var(--divider);
+
+  top:var(--stroke);
+  bottom:var(--stroke);
+
+  width:var(--divider);
   left: calc(50% - (var(--divider) / 2));
 
   background: linear-gradient(
@@ -102,15 +99,19 @@ html,body{
     #831d1c 0%,
     #5f0a0a 100%
   );
+
+  box-shadow: 0 0 0 var(--stroke) var(--lineColor) inset;
 }
 
 /* barra orizzontale */
 #cross::after{
   content:"";
   position:absolute;
-  left:0;
-  right:0;
-  height: var(--divider);
+
+  left:var(--stroke);
+  right:var(--stroke);
+
+  height:var(--divider);
   top: calc(50% - (var(--divider) / 2));
 
   background: linear-gradient(
@@ -118,19 +119,40 @@ html,body{
     #831d1c 0%,
     #5f0a0a 100%
   );
+
+  box-shadow: 0 0 0 var(--stroke) var(--lineColor) inset;
+}
+
+/* BORDO DEL BUCO (sopra tutto) */
+#outline{
+  position:absolute;
+  left:var(--holeL);
+  bottom:var(--holeB);
+  width:var(--holeW);
+  height:var(--holeH);
+  pointer-events:none;
+  z-index:3;
+
+  box-shadow:
+    0 0 0 var(--stroke) var(--lineColor) inset,
+    0 10px 25px rgba(0,0,0,0.35);
+
+  border-radius:2px;
 }
 </style>
 </head>
 
 <body>
 <div id="overlay">
+
   <div class="panel top"></div>
   <div class="panel left"></div>
   <div class="panel right"></div>
   <div class="panel bottom"></div>
 
-  <div id="outline"></div>
   <div id="cross"></div>
+  <div id="outline"></div>
+
 </div>
 </body>
 </html>
