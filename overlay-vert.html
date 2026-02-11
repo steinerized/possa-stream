@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Overlay Verticale</title>
+
+<style>
+html,body{ margin:0; padding:0; background:transparent; }
+
+/* ===== PARAMETRI ===== */
+:root{
+  --W:1080px;
+  --H:1920px;
+
+  --holeW:1020px;
+  --holeH:720px;
+
+  --holeL:30px;
+  --holeT:30px;
+
+  --holeR: calc(var(--W) - var(--holeW) - var(--holeL));
+  --holeB: calc(var(--H) - var(--holeH) - var(--holeT));
+
+  --radius:5px;
+
+  --stroke:3px;
+  --strokeColor: rgba(255,255,255,0.95);
+}
+
+#overlay{
+  width:var(--W);
+  height:var(--H);
+  position:relative;
+  overflow:hidden;
+  background:transparent;
+}
+
+/* ===== SFONDO ===== */
+.panel{
+  position:absolute;
+
+  background-image:
+    repeating-linear-gradient(
+      -35deg,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    linear-gradient(
+      90deg,
+      #380303 0%,
+      #530707 50%,
+      #380303 100%
+    );
+
+  background-size:1080px 1920px;
+  background-repeat:no-repeat;
+}
+
+/* pannelli attorno al buco */
+.top{
+  left:0;
+  top:0;
+  width:1080px;
+  height:var(--holeT);
+}
+
+.bottom{
+  left:0;
+  bottom:0;
+  width:1080px;
+  height:var(--holeB);
+  background-position:0 calc(-1 * (1920px - var(--holeB)));
+}
+
+.left{
+  left:0;
+  top:var(--holeT);
+  width:var(--holeL);
+  height:var(--holeH);
+  background-position:0 calc(-1 * var(--holeT));
+}
+
+.right{
+  right:0;
+  top:var(--holeT);
+  width:var(--holeR);
+  height:var(--holeH);
+  background-position:calc(-1 * (1080px - var(--holeR))) calc(-1 * var(--holeT));
+}
+
+/* ===== CORNICE BUCO ===== */
+#outline{
+  position:absolute;
+  left:var(--holeL);
+  top:var(--holeT);
+
+  width:var(--holeW);
+  height:var(--holeH);
+
+  border-radius:var(--radius);
+  pointer-events:none;
+
+  box-shadow:
+    0 0 0 var(--stroke) var(--strokeColor) inset,
+    0 10px 25px rgba(0,0,0,0.35);
+}
+</style>
+</head>
+
+<body>
+<div id="overlay">
+
+  <div class="panel top"></div>
+  <div class="panel left"></div>
+  <div class="panel right"></div>
+  <div class="panel bottom"></div>
+
+  <div id="outline"></div>
+
+</div>
+</body>
+</html>
