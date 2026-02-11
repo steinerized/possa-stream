@@ -23,13 +23,13 @@ html,body{ margin:0; padding:0; background:transparent; }
   --stroke:3px;
   --strokeColor: rgba(255,255,255,0.95);
 
-  --dividerFill: linear-gradient(180deg,#831d1c 0%,#5f0a0a 100%);
+  --dividerFill: #5f0a0a;
 }
 
 /* coordinate */
 :root{
   --holeR: calc(var(--W) - var(--holeW) - var(--holeL));
-  --holeB: var(--holeT);
+  --holeB: calc(var(--H) - var(--holeH) - var(--holeT));
   --cellW: calc((var(--holeW) - var(--divider)) / 2);
 }
 
@@ -43,6 +43,7 @@ html,body{ margin:0; padding:0; background:transparent; }
 /* sfondo */
 .panel{
   position:absolute;
+
   background-image:
     repeating-linear-gradient(
       -35deg,
@@ -67,7 +68,7 @@ html,body{ margin:0; padding:0; background:transparent; }
 .left{ left:0; top:var(--holeT); width:var(--holeL); height:var(--holeH); }
 .right{ right:0; top:var(--holeT); width:var(--holeR); height:var(--holeH); }
 
-/* due cornici */
+/* due finestre */
 #hole{
   position:absolute;
   left:var(--holeL);
@@ -83,6 +84,7 @@ html,body{ margin:0; padding:0; background:transparent; }
   width:var(--cellW);
 
   border-radius:var(--radius);
+
   box-shadow:
     0 0 0 var(--stroke) var(--strokeColor) inset,
     0 10px 25px rgba(0,0,0,0.25);
