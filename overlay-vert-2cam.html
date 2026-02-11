@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<title>Overlay Verticale 2 Cam</title>
+
+<style>
+html,body{ margin:0; padding:0; background:transparent; }
+
+:root{
+  --W:1080px;
+  --H:1920px;
+
+  --holeW:1020px;
+  --holeH:720px;
+
+  --holeL:30px;
+  --holeT:600px;
+
+  --divider:30px;
+
+  --radius:5px;
+  --stroke:3px;
+  --strokeColor: rgba(255,255,255,0.95);
+
+  --dividerFill: linear-gradient(180deg,#831d1c 0%,#5f0a0a 100%);
+}
+
+/* coordinate */
+:root{
+  --holeR: calc(var(--W) - var(--holeW) - var(--holeL));
+  --holeB: var(--holeT);
+  --cellW: calc((var(--holeW) - var(--divider)) / 2);
+}
+
+#overlay{
+  width:var(--W);
+  height:var(--H);
+  position:relative;
+  overflow:hidden;
+}
+
+/* sfondo */
+.panel{
+  position:absolute;
+  background-image:
+    repeating-linear-gradient(
+      -35deg,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    linear-gradient(
+      90deg,
+      #380303 0%,
+      #530707 50%,
+      #380303 100%
+    );
+
+  background-size:1080px 1920px;
+}
+
+/* pannelli */
+.top{ left:0; top:0; width:1080px; height:var(--holeT); }
+.bottom{ left:0; bottom:0; width:1080px; height:var(--holeB); }
+.left{ left:0; top:var(--holeT); width:var(--holeL); height:var(--holeH); }
+.right{ right:0; top:var(--holeT); width:var(--holeR); height:var(--holeH); }
+
+/* due cornici */
+#hole{
+  position:absolute;
+  left:var(--holeL);
+  top:var(--holeT);
+  width:var(--holeW);
+  height:var(--holeH);
+}
+
+.frame{
+  position:absolute;
+  top:0;
+  height:var(--holeH);
+  width:var(--cellW);
+
+  border-radius:var(--radius);
+  box-shadow:
+    0 0 0 var(--stroke) var(--strokeColor) inset,
+    0 10px 25px rgba(0,0,0,0.25);
+}
+
+#leftWin{ left:0; }
+#rightWin{ right:0; }
+
+/* divisore */
+#divider{
+  position:absolute;
+  left:var(--holeL);
+  top:var(--holeT);
+  width:var(--holeW);
+  height:var(--holeH);
+
+  pointer-events:none;
+  filter: drop-shadow(0 0 8px rgba(0,0,0,.35));
+}
+
+#divider::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:var(--divider);
+  left:calc(50% - var(--divider)/2);
+  background:var(--dividerFill);
+}
+</style>
+</head>
+
+<body>
+<div id="overlay">
+
+  <div class="panel top"></div>
+  <div class="panel left"></div>
+  <div class="panel right"></div>
+  <div class="panel bottom"></div>
+
+  <div id="hole">
+    <div id="leftWin" class="frame"></div>
+    <div id="rightWin" class="frame"></div>
+  </div>
+
+  <div id="divider"></div>
+
+</div>
+</body>
+</html>
