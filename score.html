@@ -7,167 +7,132 @@
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
-  *{ box-sizing:border-box; }
+* { box-sizing: border-box; }
 
-  html, body{
-    width:100%;
-    height:100%;
-    margin:0;
-    padding:0;
-    background: transparent !important;
-    overflow:hidden;
-  }
+html, body {
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0;
+  background: transparent !important;
+  overflow:hidden;
+}
 
-  /* overlay pieno come BITS */
-  #overlay{
-    position: relative;
-    width:100%;
-    height:100%;
-    background: transparent !important;
-  }
+/* OVERLAY */
+#overlay{
+  position:relative;
+  width:100%;
+  height:100%;
+}
 
-  /* PANEL = equivalente di #bits-log */
-  #score{
-    position:absolute;
-    inset:0;
-    padding:12px;
+/* PANEL */
+#score{
+  position:absolute;
+  inset:0;
+  padding:12px;
 
-    background: rgba(88,7,7,0.70); /* stesso tono di BITS */
-    border-radius:14px;
+  background: rgba(88,7,7,0.70);
+  border-radius:14px;
 
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 
-    font-family:"Anton", sans-serif;
-    color:#fff;
-    text-shadow: 0 0 1px #000, 0 0 2px #000;
+  font-family:"Anton", sans-serif;
+  color:#fff;
+  text-shadow: 0 0 1px #000, 0 0 2px #000;
+}
 
-    transition: background .3s ease, opacity .3s ease;
-  }
+/* bordo */
+#score::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+  padding:2px;
 
-  /* bordo identico a BITS */
-  #score::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:14px;
-    padding:2px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.95),
+    rgba(255,255,255,0.45),
+    rgba(255,255,255,0.95)
+  );
 
-    background: linear-gradient(
-      135deg,
-      rgba(255,255,255,0.95),
-      rgba(255,255,255,0.45),
-      rgba(255,255,255,0.95)
-    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
 
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
+  box-shadow: 0 0 12px rgba(255,255,255,0.25);
+  pointer-events:none;
+}
 
-    box-shadow: 0 0 12px rgba(255,255,255,0.25);
-    pointer-events:none;
-  }
+#score > * {
+  position:relative;
+  z-index:1;
+}
 
-  /* contenuto sopra al bordo */
-  #score > *{ position:relative; z-index:1; }
+/* HEADER */
+#comp{
+  font-size:1.3em;
+  letter-spacing:1px;
+  text-transform: uppercase;
 
-  /* HEADER gemello di BITS: usiamo #comp come header */
-  #comp{
-    font-size:1.4em;
-    letter-spacing:1px;
-    text-transform: uppercase;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.95),
+    rgba(240,240,240,0.95)
+  );
 
-    background: linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.95),
-      rgba(240,240,240,0.95)
-    );
+  color:#831d1c;
+  text-shadow:none;
 
-    color:#831d1c;
-    text-shadow:none;
+  padding:6px 10px;
+  border-radius:8px;
+  text-align:center;
+}
 
-    padding:6px 10px;
-    border-radius:8px;
-    text-align:center;
-    position:relative;
+/* RISULTATO */
+#line{
+  font-size: clamp(36px, 7vw, 60px);
+  font-weight:700;
+  text-align:center;
 
-    opacity:1; /* qui non lo rendiamo trasparente: è un header */
-  }
+  padding:8px 10px;
+  border-radius:10px;
 
-  #comp::after{
-    content:"";
-    position:absolute;
-    left:10%;
-    right:10%;
-    bottom:-3px;
-    height:2px;
+  background: rgba(0,0,0,0.15);
+  border:1px solid rgba(255,255,255,0.12);
+}
 
-    background: linear-gradient(
-      to right,
-      rgba(255,255,255,0),
-      rgba(255,255,255,0.9),
-      rgba(255,255,255,0)
-    );
+/* RIGA SOTTO */
+#line2{
+  font-size: clamp(18px, 3vw, 26px);
+  text-align:center;
+}
 
-    border-radius:2px;
-    opacity:.8;
-  }
+/* LIVE */
+@keyframes liveGlow {
+  0%   { opacity:1; }
+  50%  { opacity:0.55; }
+  100% { opacity:1; }
+}
 
-  /* RIGA 2 (squadre) */
-  #line{
-    font-size: clamp(32px, 6.8vw, 54px);
-    line-height: 1.05;
-    font-weight: 700;
-
-    padding: 8px 10px;
-    border-radius: 10px;
-
-    background: rgba(0,0,0,0.15);
-    border: 1px solid rgba(255,255,255,0.12);
-    text-align:center;
-  }
-
-  /* RIGA 3 (data) */
-  #line2{
-    font-size: clamp(18px, 3.2vw, 26px);
-    opacity: .95;
-    text-align:center;
-  }
-
-  /* LIVE dot pulse */
-  @keyframes livePulse {
-    0%   { transform: scale(1);   opacity: 1; }
-    50%  { transform: scale(1.4); opacity: 0.5; }
-    100% { transform: scale(1);   opacity: 1; }
-  }
-
-  /* Prefissi stato: ora #comp è "header", quindi usiamo ::before/::after SOLO per la parte LIVE */
-  #score[data-mode="NEXT"] #comp::before { content: "PROSSIMA • "; }
-  #score[data-mode="LAST"] #comp::before { content: "ULTIMO • "; }
-
-  #score[data-mode="NEXT"] #comp::before { color: #b86a00; } /* oro scuro leggibile su header chiaro */
-  #score[data-mode="LAST"] #comp::before { color: #2b5d8a; }
-
-  #score[data-mode="LIVE"] #comp::before{
-  content:"LIVE ";
-  color:#c01818;
+#score[data-mode="LIVE"] #comp{
   animation: liveGlow 1.6s ease-in-out infinite;
 }
 
-@keyframes liveGlow {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.55; }
-  100% { opacity: 1; }
-}
-    
-  #score[data-mode="LIVE"] #line {
-  font-size: clamp(42px, 8vw, 68px);
+/* NEXT: solo risultato */
+#score[data-mode="NEXT"] #comp,
+#score[data-mode="NEXT"] #line2{
+  display:none;
 }
 
-  #score[data-mode="ERROR"]{ opacity:.7; }
+/* ERROR */
+#score[data-mode="ERROR"]{
+  opacity:0.7;
+}
   </style>
 </head>
 
