@@ -155,7 +155,10 @@ async function tick() {
   return;
 }
     if (mode === "NEXT") {
-  compEl.textContent = compLine;
+  // niente header
+  compEl.textContent = "";
+
+  // solo squadre
   lineEl.textContent = `${m.home} - ${m.away}`;
 
   // nessuna riga sotto
