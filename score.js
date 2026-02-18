@@ -157,7 +157,10 @@ async function tick() {
     if (mode === "NEXT") {
   compEl.textContent = compLine;
   lineEl.textContent = `${m.home} - ${m.away}`;
-  line2El.textContent = fmtShortIT(m.utcDate);
+
+  // nessuna riga sotto
+  line2El.textContent = "";
+
   root.dataset.mode = "NEXT";
   return;
 }
