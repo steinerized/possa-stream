@@ -2,360 +2,156 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vertical Ticker 1920x100</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Static Social Line (Font Awesome)</title>
 
-  <!-- Google Font (più stabile di @import) -->
+  <!-- Google Font (optional) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome (SELF-HOST)
+       Metti nella repo:
+       - /css/all.min.css
+       - /webfonts/*   (tutti i file)
+  -->
+  <link rel="stylesheet" href="./css/all.min.css">
 
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-      overflow: hidden;
+    :root{
+      --w: 1920px;
+      --h: 100px;
+
+      --padL: 24px;
+
+      --textColor: #FAFAFA;
+      --fontFamily: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      --fontSize: 28px;
+
+      --shadowColor: rgba(0,0,0,.85);
+      --shadowBlur: 6px;
+      --shadowY: 2px;
+
+      --iconSize: 30px;     /* dimensione loghi */
+      --iconBaseline: 2px;  /* micro-allineamento verticale */
+      --sepOpacity: .9;
+      --dashOpacity: .75;
+
+      --gap: 10px;
     }
 
-    :root {
-      /* Tipografia */
-      --ticker-font-family: "Anton";
-      --ticker-font-size: 40px;
-      --ticker-color: #FAFAFA;
+    *{ box-sizing:border-box; }
 
-      /* Ombra testo */
-      --ticker-shadow-color: rgba(0,0,0,0.75);
-      --ticker-shadow-blur: 6px;
-      --ticker-shadow-y: 2px;
-
-      /* Layout */
-      --ticker-padding-left: 24px;
-
-      /* Badge */
-      --ticker-badge-bg: #fafafa;
-      --ticker-badge-gap: 16px;
+    html, body{
+      width:100%;
+      height:100%;
+      margin:0;
+      background: transparent;
+      overflow:hidden;
     }
 
-    /* IMPORTANTISSIMO: CSS size = canvas logical size */
-    canvas {
-      display: block;
-      width: 1920px;
-      height: 100px;
-      background: transparent;
+    #wrap{
+      width: var(--w);
+      height: var(--h);
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding-left: var(--padL);
+      color: var(--textColor);
+      font-family: var(--fontFamily);
+      font-size: var(--fontSize);
+      line-height: 1;
+      white-space: nowrap;
+
+      text-shadow: 0 var(--shadowY) var(--shadowBlur) var(--shadowColor);
+    }
+
+    .sep{
+      opacity: var(--sepOpacity);
+      margin: 0 var(--gap);
+    }
+
+    .dash{
+      opacity: var(--dashOpacity);
+      margin: 0 14px;
+    }
+
+    .social{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+    }
+
+    .brand{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+    }
+
+    .brand i{
+      font-size: var(--iconSize);
+      transform: translateY(var(--iconBaseline));
+      filter: drop-shadow(0 var(--shadowY) var(--shadowBlur) var(--shadowColor));
+    }
+
+    .label{ display:none; }
+
+    .lead{
+      font-family: 'Anton', var(--fontFamily);
+      font-weight: 400;
+      letter-spacing: .2px;
+    }
+
+    .body{
+      font-family: var(--fontFamily);
+      font-weight: 700;
     }
   </style>
 </head>
+
 <body>
+  <div id="wrap" class="body" aria-label="Call to action con social">
+    <span>Scrivi <span class="lead">!sub</span> o <span class="lead">!prime</span> per evitare le pubblicità</span>
+    <span class="sep">|</span>
+    <span>Seguimi su</span>
 
-  <!-- IMPORTANTISSIMO: attributes width/height = logical size -->
-  <canvas id="ticker" width="1920" height="100"></canvas>
+    <span class="dash">-</span>
 
-  <script>
-    // =========================
-    // TIMING
-    // =========================
-    const IN_MS = 1000;
-    const HOLD_MS = 60000;
-    const OUT_MS = 1000;
-    const TOTAL_MS = IN_MS + HOLD_MS + OUT_MS;
+    <span class="social" aria-label="Social links (icone)">
+      <span class="brand" title="Facebook" aria-label="Facebook">
+        <i class="fa-brands fa-facebook-f"></i><span class="label">Facebook</span>
+      </span>
+      <span class="dash">-</span>
 
-    // "BADGE|testo"
-    const MESSAGES = [
-      "SUPPORTAMI |Scrivi !sub o !prime per evitare le pubblicità | Seguimi su Facebook - Instagram - YouTube - TikTok - X - Twitch - Spotify"
-    ];
+      <span class="brand" title="Instagram" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i><span class="label">Instagram</span>
+      </span>
+      <span class="dash">-</span>
 
-    const canvas = document.getElementById("ticker");
-    const ctx = canvas.getContext("2d");
+      <span class="brand" title="YouTube" aria-label="YouTube">
+        <i class="fa-brands fa-youtube"></i><span class="label">YouTube</span>
+      </span>
+      <span class="dash">-</span>
 
-    // Prendiamo la size LOGICA direttamente dal canvas (1920x100)
-    const W = canvas.width;
-    const H = canvas.height;
+      <span class="brand" title="TikTok" aria-label="TikTok">
+        <i class="fa-brands fa-tiktok"></i><span class="label">TikTok</span>
+      </span>
+      <span class="dash">-</span>
 
-    // =========================
-    // CSS vars -> JS
-    // =========================
-    function cssVar(name, fallback) {
-      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-      return v || fallback;
-    }
-    function cssPx(name, fallback) {
-      const v = cssVar(name, "");
-      const n = parseFloat(v);
-      return Number.isFinite(n) ? n : fallback;
-    }
+      <span class="brand" title="X" aria-label="X">
+        <i class="fa-brands fa-x-twitter"></i><span class="label">X</span>
+      </span>
+      <span class="dash">-</span>
 
-    const FONT_FAMILY = cssVar("--ticker-font-family", "Anton");
-    const FONT_SIZE = cssPx("--ticker-font-size", 20);
-    const TEXT_COLOR = cssVar("--ticker-color", "#FAFAFA");
+      <span class="brand" title="Twitch" aria-label="Twitch">
+        <i class="fa-brands fa-twitch"></i><span class="label">Twitch</span>
+      </span>
+      <span class="dash">-</span>
 
-    const SHADOW_COLOR = cssVar("--ticker-shadow-color", "rgba(0,0,0)");
-    const SHADOW_BLUR = cssPx("--ticker-shadow-blur", 6);
-    const SHADOW_Y = cssPx("--ticker-shadow-y", 2);
-
-    const PADDING_LEFT = cssPx("--ticker-padding-left", 24);
-    const BADGE_PAD_X = 5; // px padding sinistra/destra badge
-    const BADGE_BG = cssVar("--ticker-badge-bg", "rgba(128,0,0)");
-    const BADGE_GAP = cssPx("--ticker-badge-gap", 16);
-
-    // =========================
-    // HiDPI: aumenta risoluzione REALE, ma coordinate restano W x H
-    // =========================
-    function setupHiDPI() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-
-      // Manteniamo le dimensioni logiche W,H ma aumentiamo buffer
-      canvas.width = Math.round(W * dpr);
-      canvas.height = Math.round(H * dpr);
-
-      // Rimettiamo la size CSS coerente (se qualcuno la tocca)
-      canvas.style.width = `${W}px`;
-      canvas.style.height = `${H}px`;
-
-      // Coordinate logiche
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.imageSmoothingEnabled = true;
-    }
-    setupHiDPI();
-
-    // =========================
-    // UTIL
-    // =========================
-    function easeInOutCubic(t) {
-      return t < 0.5
-        ? 4 * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    }
-
-    function clear() {
-      ctx.clearRect(0, 0, W, H);
-    }
-
-    // =========================
-    // ICONS (SVG inline -> Image)
-    // =========================
-    const ICON_SIZE = Math.round(FONT_SIZE + 8);
-    const ICON_GAP = 10; // spazio tra testo e icona / icona e testo
-
-    function svgDataUri(svg) {
-      // encodeURIComponent mantiene l'SVG leggero e compatibile
-      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-    }
-
-    // Icone "brand-like" semplici, monocromatiche (bianco), su trasparente.
-    // Non sono copie 1:1 dei marchi: sono pittogrammi riconoscibili.
-    const ICON_SVGS = {
-      Facebook: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M13.5 22v-8h2.6l.4-3H13.5V9.2c0-.9.3-1.5 1.6-1.5H16.6V5.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V11H7.5v3h2.4v8h3.6z"/>
-        </svg>`,
-      Instagram: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/>
-          <path fill="white" d="M12 8a4 4 0 1 0 0 8a4 4 0 0 0 0-8zm0 2a2 2 0 1 1 0 4a2 2 0 0 1 0-4z"/>
-          <circle cx="17.2" cy="6.8" r="1.1" fill="white"/>
-        </svg>`,
-      YouTube: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M21.6 8.1a3 3 0 0 0-2.1-2.1C17.8 5.5 12 5.5 12 5.5s-5.8 0-7.5.5A3 3 0 0 0 2.4 8.1A31 31 0 0 0 2 12a31 31 0 0 0 .4 3.9a3 3 0 0 0 2.1 2.1c1.7.5 7.5.5 7.5.5s5.8 0 7.5-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 22 12a31 31 0 0 0-.4-3.9z"/>
-          <path fill="black" d="M10.3 9.5v5l5-2.5l-5-2.5z" opacity="0.0"/>
-          <path fill="white" d="M10.1 9.3v5.4l5.2-2.7l-5.2-2.7z"/>
-        </svg>`,
-      TikTok: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M14 3v9.2a3.8 3.8 0 1 1-3-3.7V5.2c.7-.1 1.4-.2 3-.2zm6 6.1c-2-.3-3.5-1.3-4.4-3V8c1.2 1.6 2.7 2.6 4.4 2.9v-1.8z"/>
-        </svg>`,
-      X: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M18.6 3H21l-6.8 7.7L22 21h-6.2l-4.8-6.1L5.8 21H3l7.3-8.3L2 3h6.4l4.3 5.6L18.6 3zm-1.1 16h1.3L6.6 4.9H5.2L17.5 19z"/>
-        </svg>`,
-      Twitch: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M4 3h16v10l-4 4h-4l-2 2H8v-2H4V3zm14 9V5H6v10h3v2l2-2h5l2-2z"/>
-          <path fill="white" d="M11 7h2v5h-2V7zm4 0h2v5h-2V7z"/>
-        </svg>`,
-      Spotify: `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="white" d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20zm4.6 14.4c-.2.3-.6.4-.9.2-2.5-1.5-5.7-1.9-9.5-1.1-.4.1-.7-.2-.8-.5-.1-.4.2-.7.5-.8 4.1-.9 7.6-.5 10.4 1.2.3.2.4.6.2 1zm1.3-3c-.2.3-.7.5-1 .3-2.9-1.8-7.3-2.3-10.7-1.2-.4.1-.9-.1-1-.6-.1-.4.1-.9.6-1 3.9-1.2 8.7-.6 12 1.4.3.2.5.7.3 1.1zm.1-3.2c-3.5-2.1-9.3-2.3-12.7-1.2-.5.2-1-.1-1.2-.6-.2-.5.1-1 .6-1.2 3.9-1.2 10.3-1 14.3 1.4.4.2.5.9.3 1.3-.2.4-.8.5-1.3.3z"/>
-        </svg>`
-    };
-
-    const ICONS = {}; // name -> HTMLImageElement
-
-    function preloadIcons() {
-      const names = Object.keys(ICON_SVGS);
-      const promises = names.map((name) => new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve();
-        img.onerror = () => resolve(); // non bloccare: se fallisce, disegniamo testo
-        img.src = svgDataUri(ICON_SVGS[name]);
-        ICONS[name] = img;
-      }));
-      return Promise.all(promises);
-    }
-
-    const SOCIAL_RE = /\b(Facebook|Instagram|YouTube|TikTok|X|Twitch|Spotify)\b/g;
-
-    function drawRich(text, x, y) {
-      // Disegna testo e sostituisce i nomi social con le icone
-      // Mantiene lo stesso font e shadow già impostati fuori.
-      let cursorX = x;
-      let lastIndex = 0;
-
-      // IMPORTANT: misura accurata con lo stesso font impostato
-      const matches = [...String(text).matchAll(SOCIAL_RE)];
-      if (matches.length === 0) {
-        ctx.fillText(text, cursorX, y);
-        return;
-      }
-
-      for (const m of matches) {
-        const name = m[1];
-        const start = m.index ?? 0;
-        const end = start + name.length;
-
-        const before = text.slice(lastIndex, start);
-        if (before) {
-          ctx.fillText(before, cursorX, y);
-          cursorX += ctx.measureText(before).width;
-        }
-
-        // gap prima dell'icona se necessario (evita che si attacchi alle lettere)
-        cursorX += 2;
-
-        const img = ICONS[name];
-        if (img && img.complete && img.naturalWidth > 0) {
-          const s = ICON_SIZE;
-          const top = y - s / 2;
-          // shadow già attivo: anche l'icona "stacca" bene
-          ctx.drawImage(img, Math.round(cursorX), Math.round(top), s, s);
-          cursorX += s;
-        } else {
-          // fallback: se l'icona non è pronta, scrivi il nome
-          ctx.fillText(name, cursorX, y);
-          cursorX += ctx.measureText(name).width;
-        }
-
-        cursorX += ICON_GAP;
-        lastIndex = end;
-      }
-
-      const after = text.slice(lastIndex);
-      if (after) {
-        ctx.fillText(after, cursorX, y);
-      }
-    }
-
-
-    // =========================
-    // DRAW
-    // =========================
-  function drawMessage(raw, y) {
-      clear();
-
-      const parts = String(raw).split("|");
-
-      // Manteniamo esattamente maiuscole/minuscole come nel testo
-      const badgeLabel = ((parts[0] ?? "").trim());
-      const restText  = ((parts[1] ?? "").trim());
-
-      // -------------------------
-      // BADGE (padding reale simmetrico, misura col font del badge)
-      // -------------------------
-      const badgePad = BADGE_PAD_X;
-
-      // Imposta il font del badge (+2px) PRIMA di misurare
-      ctx.font = `${FONT_SIZE + 2}px ${FONT_FAMILY}, system-ui, Arial, sans-serif`;
-      ctx.textAlign = "left";
-      ctx.textBaseline = "middle";
-
-      const badgeTextW = ctx.measureText(badgeLabel).width;
-      const badgeWidth = badgeTextW + badgePad * 2;
-
-      // sfondo badge (alto quanto canvas)
-      ctx.fillStyle = BADGE_BG; // #fafafa dal CSS
-      ctx.fillRect(PADDING_LEFT, 0, badgeWidth, H);
-
-      // testo badge: NO shadow, #580707
-      ctx.shadowColor = "transparent";
-      ctx.shadowBlur = 0;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-
-      ctx.fillStyle = "#580707";
-      ctx.fillText(badgeLabel, PADDING_LEFT + badgePad, y);
-
-      // -------------------------
-      // TESTO NORMALE: shadow on, bianco (font base)
-      // -------------------------
-      if (restText) {
-        ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}, system-ui, Arial, sans-serif`;
-        ctx.shadowColor = SHADOW_COLOR;
-        ctx.shadowBlur = SHADOW_BLUR;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = SHADOW_Y;
-
-                ctx.fillStyle = TEXT_COLOR;
-        const afterX = PADDING_LEFT + badgeWidth + BADGE_GAP;
-        drawRich(restText, afterX, y);
-      }
-
-      // reset shadow
-      ctx.shadowColor = "transparent";
-      ctx.shadowBlur = 0;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-    }
-
-    // =========================
-    // ANIMATION (enter/hold/exit)
-    // =========================
-    const CENTER_Y = H / 2;
-    const Y_IN_START = -FONT_SIZE * 2;    // fuori sopra
-    const Y_OUT_END = H + FONT_SIZE * 2;  // fuori sotto
-
-    let idx = 0;
-    let phaseStartTs = null;
-
-    function animate(ts) {
-      if (!phaseStartTs) phaseStartTs = ts;
-
-      const elapsed = ts - phaseStartTs;
-      const msg = MESSAGES[idx];
-
-      let y;
-
-      if (elapsed < IN_MS) {
-        const t = easeInOutCubic(elapsed / IN_MS);
-        y = Y_IN_START + (CENTER_Y - Y_IN_START) * t;
-      } else if (elapsed < IN_MS + HOLD_MS) {
-        y = CENTER_Y;
-      } else if (elapsed < TOTAL_MS) {
-        const tRaw = (elapsed - IN_MS - HOLD_MS) / OUT_MS;
-        const t = easeInOutCubic(tRaw);
-        y = CENTER_Y + (Y_OUT_END - CENTER_Y) * t;
-      } else {
-        idx = (idx + 1) % MESSAGES.length;
-        phaseStartTs = ts;
-        y = Y_IN_START;
-      }
-
-      drawMessage(msg, y);
-      requestAnimationFrame(animate);
-    }
-
-    // Start: aspetta Anton prima del primo draw
-    (async function start() {
-      try {
-        await document.fonts.load(`${FONT_SIZE}px ${FONT_FAMILY}`);
-        await document.fonts.ready;
-        await preloadIcons();
-      } catch (_) {}
-      requestAnimationFrame(animate);
-    })();
-
-    window.addEventListener("resize", setupHiDPI);
-  </script>
-
+      <span class="brand" title="Spotify" aria-label="Spotify">
+        <i class="fa-brands fa-spotify"></i><span class="label">Spotify</span>
+      </span>
+    </span>
+  </div>
 </body>
 </html>
