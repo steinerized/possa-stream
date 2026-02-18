@@ -370,13 +370,49 @@
       const type = String(data.type || "").toLowerCase();
       const msg0 = Array.isArray(data.message) ? data.message[0] : null;
 
-      const name =
-        msg0?.name ||
-        msg0?.username ||
-        data.name ||
-        data.username ||
-        data.user ||
-        "Anonimo";
+      const pickName = (d) => {
+  const m0 = Array.isArray(d.message) ? d.message[0] : null;
+
+  // candidati comuni
+  const candidates = [
+    m0?.name,
+    m0?.username,
+    m0?.display_name,
+    m0?.from,
+    m0?.sender,
+    m0?.gifter,          // spesso per gift
+    m0?.donator,         // a volte riusato
+    m0?.subscriber,      // a volte
+    m0?.user,
+    d.name,
+    d.username,
+    d.display_name,
+    d.from,
+    d.sender,
+    d.gifter,
+    d.subscriber,
+    d.user,
+    d?.message?.name,    // alcuni payload strani
+  ];
+
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c.trim();
+  }
+
+  // se c'è un array message, prova a trovare una stringa sensata dentro
+  if (m0 && typeof m0 === "object") {
+    for (const [k, v] of Object.entries(m0)) {
+      if (typeof v === "string" && v.trim() && !k.toLowerCase().includes("amount")) {
+        // evita di prendere "subscription" o roba tecnica
+        if (v.length <= 40) return v.trim();
+      }
+    }
+  }
+
+  return "Anonimo";
+};
+
+const name = pickName(data);
 
       const platform =
         data.platform ||
