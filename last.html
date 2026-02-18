@@ -324,6 +324,10 @@
     elBits.textContent = savedBits;
     elDono.textContent = savedDono;
 
+    if (isSub) {
+  console.log("[SUB PAYLOAD]", data);
+}
+
     // Fallback URL params (opzionale)
     const params = new URLSearchParams(location.search);
     if (!savedSub && params.get("sub")) setSub(params.get("sub"), params.get("tSub"));
