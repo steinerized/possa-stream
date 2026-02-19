@@ -5,28 +5,33 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Intro - Tra poco</title>
 
+  <!-- Google Font: Bebas Neue -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      /* Granata (puoi ritoccarlo qui) */
       --granata: #7a0019;
       --granata-deep: #4e0010;
       --text: #ffffff;
 
-      /* timing */
-      --swap-ms: 2200;
-      --fade-ms: 450;
+      /* Alternanza testi: 20 secondi */
+      --swap-ms: 20000;
+
+      /* durata fade (out + in) */
+      --fade-ms: 900;
     }
 
     *{ box-sizing:border-box; }
     html, body { height:100%; margin:0; }
     body{
       overflow:hidden;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: var(--granata);
       color: var(--text);
     }
 
-    /* ====== BACKGROUND LAYERS ====== */
+    /* ====== BACKGROUND ====== */
     .stage{
       position:relative;
       width:100%;
@@ -38,16 +43,13 @@
       background: radial-gradient(1200px 800px at 50% 30%, #8b0020 0%, var(--granata) 45%, var(--granata-deep) 100%);
     }
 
-    /* “pattern” animato: 2 layer + noise leggero */
     .pattern{
       position:absolute;
       inset:-40%;
       z-index:0;
       opacity:0.55;
-      filter: saturate(1.05);
       transform: translateZ(0);
       will-change: transform;
-      /* Layer 1: strisce diagonali */
       background:
         repeating-linear-gradient(
           135deg,
@@ -64,7 +66,6 @@
       content:"";
       position:absolute;
       inset:0;
-      /* Layer 2: onde morbide “a macchie” */
       background:
         radial-gradient(700px 420px at 20% 20%, rgba(255,255,255,0.10), transparent 60%),
         radial-gradient(620px 460px at 80% 25%, rgba(0,0,0,0.18), transparent 60%),
@@ -73,7 +74,6 @@
       mix-blend-mode: soft-light;
     }
 
-    /* Finto “noise” super leggero */
     .noise{
       position:absolute;
       inset:0;
@@ -85,16 +85,6 @@
       mix-blend-mode: overlay;
     }
 
-    @keyframes drift{
-      0%   { transform: translate(-6%, -4%) rotate(0.0001deg) scale(1.05); }
-      100% { transform: translate( 6%,  4%) rotate(0.0001deg) scale(1.05); }
-    }
-    @keyframes drift2{
-      0%,100% { transform: translate(-2%, 1%) scale(1.02); }
-      50%     { transform: translate( 2%,-1%) scale(1.04); }
-    }
-
-    /* vignetta/luce */
     .vignette{
       position:absolute;
       inset:0;
@@ -105,84 +95,81 @@
       pointer-events:none;
     }
 
-    /* ====== CONTENT ====== */
+    @keyframes drift{
+      0%   { transform: translate(-6%, -4%) rotate(0.0001deg) scale(1.05); }
+      100% { transform: translate( 6%,  4%) rotate(0.0001deg) scale(1.05); }
+    }
+    @keyframes drift2{
+      0%,100% { transform: translate(-2%, 1%) scale(1.02); }
+      50%     { transform: translate( 2%,-1%) scale(1.04); }
+    }
+
+    /* ====== TEXT ====== */
     .content{
       position:relative;
       z-index:3;
-      width:min(1100px, 92vw);
-      padding: clamp(16px, 3vw, 36px);
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      width:min(1200px, 92vw);
+      padding: clamp(16px, 3vw, 40px);
       text-align:center;
-    }
-
-    .card{
-      width: 100%;
-      padding: clamp(22px, 4vw, 54px) clamp(18px, 3.5vw, 42px);
-      border-radius: 24px;
-      background: rgba(0,0,0,0.18);
-      border: 1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+      user-select:none;
     }
 
     .headline{
-      font-weight: 900;
-      letter-spacing: 0.02em;
-      font-size: clamp(42px, 6vw, 96px);
-      line-height: 1.05;
-      margin: 0;
+      margin:0;
+      font-family: "Bebas Neue", system-ui, sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      font-size: clamp(56px, 7vw, 120px);
+      line-height: 1.0;
       text-transform: uppercase;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+      /* leggibilità senza “blocco” */
+      text-shadow:
+        0 10px 30px rgba(0,0,0,0.35),
+        0 2px 0 rgba(0,0,0,0.12);
     }
 
     .sub{
       margin-top: 14px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       font-weight: 700;
-      font-size: clamp(16px, 1.8vw, 22px);
+      font-size: clamp(14px, 1.6vw, 20px);
       opacity: 0.9;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      text-shadow: 0 8px 24px rgba(0,0,0,0.28);
     }
 
-    /* testo che si alterna */
     .swap{
       display:inline-block;
       position:relative;
-      min-height: 1.1em; /* evita saltelli */
+      min-height: 1em;
     }
 
     .swap span{
       position:absolute;
       left:50%;
-      transform: translate(-50%, 12px);
+      top:0;
+      transform: translate(-50%, 10px);
       opacity:0;
       transition:
         opacity var(--fade-ms) ease,
         transform var(--fade-ms) ease;
       white-space:nowrap;
     }
-
     .swap span.active{
       opacity:1;
       transform: translate(-50%, 0px);
     }
 
-    /* piccolo “pulse” sul card */
-    .card{
-      animation: breathe 3.8s ease-in-out infinite;
-    }
-    @keyframes breathe{
-      0%,100%{ transform: scale(1); }
-      50%{ transform: scale(1.01); }
+    /* fase “uscita” */
+    .swap span.leaving{
+      opacity:0;
+      transform: translate(-50%, -8px);
     }
 
-    /* safe for Streamlabs: evita selezioni */
-    .stage, .card { user-select:none; }
-
-    /* supporto schermi verticali */
     @media (orientation: portrait){
-      .card{ border-radius: 20px; }
+      .headline{ letter-spacing: 0.05em; }
       .sub{ margin-top: 12px; }
     }
   </style>
@@ -195,31 +182,45 @@
     <div class="vignette"></div>
 
     <div class="content">
-      <div class="card">
-        <h1 class="headline">
-          <span class="swap" id="swap">
-            <span class="active">TRA POCO!</span>
-            <span>@MatteoTorinoFC</span>
-          </span>
-        </h1>
-        <div class="sub">Restate con noi • Sta per iniziare</div>
-      </div>
+      <h1 class="headline">
+        <span class="swap" id="swap">
+          <span class="active">TRA POCO!</span>
+          <span>@MatteoTorinoFC</span>
+        </span>
+      </h1>
+      <div class="sub">Restate con noi • Sta per iniziare</div>
     </div>
   </div>
 
   <script>
     (function(){
+      const root = document.documentElement;
       const swap = document.getElementById("swap");
       const items = Array.from(swap.querySelectorAll("span"));
+
+      const SWAP_MS = parseInt(getComputedStyle(root).getPropertyValue("--swap-ms")) || 20000;
+      const FADE_MS = parseInt(getComputedStyle(root).getPropertyValue("--fade-ms")) || 900;
+
       let idx = 0;
 
-      const SWAP_MS = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--swap-ms")) || 2200;
+      function step(){
+        const current = items[idx];
+        const next = items[(idx + 1) % items.length];
 
-      setInterval(() => {
-        items[idx].classList.remove("active");
-        idx = (idx + 1) % items.length;
-        items[idx].classList.add("active");
-      }, SWAP_MS);
+        // fade out
+        current.classList.add("leaving");
+        current.classList.remove("active");
+
+        // dopo metà fade, switch
+        window.setTimeout(() => {
+          current.classList.remove("leaving");
+          next.classList.add("active");
+          idx = (idx + 1) % items.length;
+        }, Math.floor(FADE_MS * 0.60));
+      }
+
+      // prima alternanza dopo 20s (come richiesto)
+      window.setInterval(step, SWAP_MS);
     })();
   </script>
 </body>
