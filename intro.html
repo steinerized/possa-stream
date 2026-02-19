@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Intro - Tra poco</title>
 
-  <!-- Google Font: Bebas Neue -->
+  <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -16,11 +16,15 @@
       --granata-deep: #4e0010;
       --text: #ffffff;
 
-      /* Alternanza testi: 20 secondi */
-      --swap-ms: 20000;
+      /* durata totale per ciascuna scritta (come richiesto: 20s) */
+      --cycle-ms: 20000;
 
-      /* durata fade (out + in) */
-      --fade-ms: 900;
+      /* fade evidente */
+      --fade-ms: 1200;
+
+      /* zoom lento durante visibilità */
+      --zoom-from: 1;
+      --zoom-to: 1.05;
     }
 
     *{ box-sizing:border-box; }
@@ -122,11 +126,9 @@
       font-size: clamp(56px, 7vw, 120px);
       line-height: 1.0;
       text-transform: uppercase;
-
-      /* leggibilità senza “blocco” */
       text-shadow:
-        0 10px 30px rgba(0,0,0,0.35),
-        0 2px 0 rgba(0,0,0,0.12);
+        0 10px 30px rgba(0,0,0,0.38),
+        0 2px 0 rgba(0,0,0,0.14);
     }
 
     .sub{
@@ -143,34 +145,61 @@
     .swap{
       display:inline-block;
       position:relative;
-      min-height: 1em;
+      min-height: 1em; /* evita saltelli */
     }
 
+    /* Tutti i testi sovrapposti */
     .swap span{
       position:absolute;
       left:50%;
       top:0;
-      transform: translate(-50%, 10px);
-      opacity:0;
-      transition:
-        opacity var(--fade-ms) ease,
-        transform var(--fade-ms) ease;
       white-space:nowrap;
-    }
-    .swap span.active{
-      opacity:1;
-      transform: translate(-50%, 0px);
+      opacity:0;
+      transform: translate(-50%, 10px) scale(var(--zoom-from));
+      will-change: opacity, transform;
     }
 
-    /* fase “uscita” */
-    .swap span.leaving{
-      opacity:0;
-      transform: translate(-50%, -8px);
+    /* Questa classe fa partire la “timeline” (fade + zoom) */
+    .swap span.play{
+      animation: revealZoom var(--cycle-ms) linear forwards;
+    }
+
+    /* Timeline: fade-in -> hold -> fade-out, con zoom lento 1.00->1.05 */
+    @keyframes revealZoom{
+      /* partenza: invisibile e leggermente sotto */
+      0%{
+        opacity:0;
+        transform: translate(-50%, 12px) scale(var(--zoom-from));
+      }
+
+      /* fade in (circa 6% di 20s = ~1.2s) */
+      6%{
+        opacity:1;
+        transform: translate(-50%, 0px) scale(calc(var(--zoom-from) + 0.01));
+      }
+
+      /* hold lungo con zoom che continua */
+      92%{
+        opacity:1;
+        transform: translate(-50%, 0px) scale(var(--zoom-to));
+      }
+
+      /* fade out (ultimi ~1.6s circa, ma percepibile) */
+      100%{
+        opacity:0;
+        transform: translate(-50%, -10px) scale(var(--zoom-to));
+      }
     }
 
     @media (orientation: portrait){
       .headline{ letter-spacing: 0.05em; }
       .sub{ margin-top: 12px; }
+    }
+
+    /* opzionale: riduce animazioni se sistema lo richiede */
+    @media (prefers-reduced-motion: reduce){
+      .pattern, .pattern::before { animation: none !important; }
+      .swap span.play { animation: none !important; opacity:1; transform: translate(-50%,0) scale(1); }
     }
   </style>
 </head>
@@ -184,7 +213,7 @@
     <div class="content">
       <h1 class="headline">
         <span class="swap" id="swap">
-          <span class="active">TRA POCO!</span>
+          <span>TRA POCO!</span>
           <span>@MatteoTorinoFC</span>
         </span>
       </h1>
@@ -198,29 +227,28 @@
       const swap = document.getElementById("swap");
       const items = Array.from(swap.querySelectorAll("span"));
 
-      const SWAP_MS = parseInt(getComputedStyle(root).getPropertyValue("--swap-ms")) || 20000;
-      const FADE_MS = parseInt(getComputedStyle(root).getPropertyValue("--fade-ms")) || 900;
+      const CYCLE_MS = parseInt(getComputedStyle(root).getPropertyValue("--cycle-ms")) || 20000;
 
       let idx = 0;
 
-      function step(){
-        const current = items[idx];
-        const next = items[(idx + 1) % items.length];
+      function play(i){
+        // reset di tutti
+        for (const el of items) el.classList.remove("play");
 
-        // fade out
-        current.classList.add("leaving");
-        current.classList.remove("active");
+        // forza reflow per riavviare l'animazione CSS in modo affidabile
+        void swap.offsetHeight;
 
-        // dopo metà fade, switch
-        window.setTimeout(() => {
-          current.classList.remove("leaving");
-          next.classList.add("active");
-          idx = (idx + 1) % items.length;
-        }, Math.floor(FADE_MS * 0.60));
+        items[i].classList.add("play");
       }
 
-      // prima alternanza dopo 20s (come richiesto)
-      window.setInterval(step, SWAP_MS);
+      // start
+      play(idx);
+
+      // ogni 20s passa al prossimo
+      setInterval(() => {
+        idx = (idx + 1) % items.length;
+        play(idx);
+      }, CYCLE_MS);
     })();
   </script>
 </body>
