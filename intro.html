@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Intro - Tra poco</title>
 
-  <!-- Orbitron 900 -->
+  <!-- Bebas Neue -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -16,13 +16,10 @@
       --granata-deep: #4e0010;
       --text: #ffffff;
 
-      /* 20s per cambio testo */
-      --cycle-ms: 20000;
+      /* cambio scritta ogni 20s */
+      --cycle: 20s;
 
-      /* fade bello visibile */
-      --fade-ms: 1200;
-
-      /* zoom lento */
+      /* zoom */
       --zoom-from: 1;
       --zoom-to: 1.05;
     }
@@ -33,6 +30,7 @@
       overflow:hidden;
       background: var(--granata);
       color: var(--text);
+      user-select:none;
     }
 
     /* ====== BACKGROUND ====== */
@@ -115,76 +113,61 @@
       width:min(1200px, 92vw);
       padding: clamp(16px, 3vw, 40px);
       text-align:center;
-      user-select:none;
     }
 
     .headline{
       margin:0;
-      font-family: "Orbitron", system-ui, sans-serif;
-      font-weight: 900;
-      font-size: clamp(44px, 6.5vw, 110px);
-      letter-spacing: 0.06em;
+      font-family: "Bebas Neue", system-ui, sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      font-size: clamp(56px, 7vw, 130px);
       line-height: 1.0;
       text-transform: uppercase;
-
-      /* leggibilità senza blocchi */
       text-shadow:
-        0 14px 38px rgba(0,0,0,0.40),
+        0 14px 40px rgba(0,0,0,0.40),
         0 2px 0 rgba(0,0,0,0.12);
     }
 
     .swap{
       position:relative;
       display:inline-block;
-      min-height: 1.1em; /* evita salto layout */
+      min-height: 1.05em;
     }
 
-    .swap .msg{
+    .msg{
       position:absolute;
       left:50%;
       top:0;
-      transform: translate(-50%, 10px) scale(var(--zoom-from));
-      opacity:0;
       white-space:nowrap;
-
-      transition:
-        opacity var(--fade-ms) ease,
-        transform var(--fade-ms) ease;
-      will-change: opacity, transform;
-    }
-
-    /* visibile (fade-in) */
-    .swap .msg.show{
-      opacity:1;
-      transform: translate(-50%, 0px) scale(var(--zoom-from));
-    }
-
-    /* fade-out (leggero up) */
-    .swap .msg.hide{
       opacity:0;
-      transform: translate(-50%, -10px) scale(var(--zoom-to));
+      transform: translate(-50%, 10px) scale(var(--zoom-from));
+      will-change: opacity, transform;
+      pointer-events:none;
     }
 
-    /* zoom lento mentre è visibile */
-    .swap .msg.zooming{
-      animation: slowZoom linear forwards;
-      animation-duration: calc(var(--cycle-ms) - (var(--fade-ms) * 2));
+    /* attiva: timeline completa (fade in -> zoom -> fade out) */
+    .msg.on{
+      animation: showZoom var(--cycle) ease-in-out both;
     }
 
-    @keyframes slowZoom{
-      0%   { transform: translate(-50%, 0px) scale(var(--zoom-from)); }
-      100% { transform: translate(-50%, 0px) scale(var(--zoom-to)); }
-    }
+    @keyframes showZoom{
+      /* inizio invisibile */
+      0%   { opacity:0; transform: translate(-50%, 12px) scale(var(--zoom-from)); }
 
-    /* fallback: se niente JS, almeno la prima scritta resta visibile */
-    .swap .msg.default-on{
-      opacity:1;
-      transform: translate(-50%, 0px) scale(var(--zoom-from));
+      /* fade in (più evidente) */
+      8%   { opacity:1; transform: translate(-50%, 0px)  scale(var(--zoom-from)); }
+
+      /* zoom lento mentre resta su */
+      90%  { opacity:1; transform: translate(-50%, 0px)  scale(var(--zoom-to)); }
+
+      /* fade out */
+      100% { opacity:0; transform: translate(-50%, -10px) scale(var(--zoom-to)); }
     }
 
     @media (prefers-reduced-motion: reduce){
       .pattern, .pattern::before { animation:none !important; }
-      .swap .msg { transition:none !important; animation:none !important; opacity:1; transform:translate(-50%,0) scale(1); }
+      .msg{ opacity:1 !important; transform: translate(-50%,0) scale(1) !important; }
+      .msg.on{ animation:none !important; }
     }
   </style>
 </head>
@@ -198,68 +181,26 @@
     <div class="content">
       <h1 class="headline">
         <span class="swap" id="swap">
-          <!-- prima scritta ON di default (così non “sparisce” mai) -->
-          <span class="msg default-on" data-i="0">TRA POCO!</span>
-          <span class="msg" data-i="1">@MatteoTorinoFC</span>
+          <span class="msg on">TRA POCO!</span>
+          <span class="msg">@MatteoTorinoFC</span>
         </span>
       </h1>
     </div>
   </div>
 
   <script>
-    (function(){
-      const root = document.documentElement;
-      const swap = document.getElementById("swap");
-      const items = Array.from(swap.querySelectorAll(".msg"));
+    // JS minimo: solo alternanza ON ogni 20s
+    const msgs = [...document.querySelectorAll("#swap .msg")];
+    let i = 0;
 
-      const CYCLE_MS = parseInt(getComputedStyle(root).getPropertyValue("--cycle-ms")) || 20000;
-      const FADE_MS  = parseInt(getComputedStyle(root).getPropertyValue("--fade-ms"))  || 1200;
+    setInterval(() => {
+      msgs[i].classList.remove("on");
+      i = (i + 1) % msgs.length;
 
-      // tempi: fade-in (FADE_MS) + hold/zoom (CYCLE-2*FADE) + fade-out (FADE_MS) = CYCLE
-      const HOLD_MS = Math.max(0, CYCLE_MS - (FADE_MS * 2));
-
-      let idx = 0;
-
-      function clearClasses(el){
-        el.classList.remove("default-on","show","hide","zooming");
-      }
-
-      function show(el){
-        clearClasses(el);
-        // reflow per riavviare animazione zoom in modo affidabile
-        void el.offsetWidth;
-
-        el.classList.add("show");
-        // appena finito il fade-in, parte lo zoom lento
-        setTimeout(() => {
-          el.classList.add("zooming");
-        }, FADE_MS);
-      }
-
-      function hide(el){
-        el.classList.remove("show","zooming");
-        el.classList.add("hide");
-      }
-
-      // init robusto: forza il primo come show + zooming
-      items.forEach(clearClasses);
-      show(items[idx]);
-
-      setInterval(() => {
-        const current = items[idx];
-        const next = items[(idx + 1) % items.length];
-
-        // parte fade-out alla fine della fase "hold"
-        setTimeout(() => hide(current), FADE_MS + HOLD_MS);
-
-        // switch: appena finito il fade-out
-        setTimeout(() => {
-          idx = (idx + 1) % items.length;
-          show(next);
-        }, CYCLE_MS);
-
-      }, CYCLE_MS);
-    })();
+      // riavvia l'animazione CSS in modo affidabile
+      void msgs[i].offsetWidth;
+      msgs[i].classList.add("on");
+    }, 20000);
   </script>
 </body>
 </html>
