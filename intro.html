@@ -134,41 +134,36 @@
       min-height: 1.05em;
     }
 
-    .msg{
-      position:absolute;
-      left:50%;
-      top:0;
-      white-space:nowrap;
-      opacity:0;
-      transform: translate(-50%, 10px) scale(var(--zoom-from));
-      will-change: opacity, transform;
-      pointer-events:none;
-    }
+   .msg{
+  position:absolute;
+  left:50%;
+  top:0;
+  white-space:nowrap;
+  opacity:0;
+  transform: translate(-50%, 10px) scale(1);
+  transform-origin: 50% 50%;
+  will-change: opacity, transform;
+  pointer-events:none;
+}
 
-    /* attiva: timeline completa (fade in -> zoom -> fade out) */
-    .msg.on{
-      animation: showZoom var(--cycle) ease-in-out both;
-    }
+/* attiva: timeline completa (fade in -> zoom -> fade out) */
+.msg.on{
+  animation: showZoom 20s ease-in-out both;
+}
 
-    @keyframes showZoom{
-      /* inizio invisibile */
-      0%   { opacity:0; transform: translate(-50%, 12px) scale(var(--zoom-from)); }
+@keyframes showZoom{
+  /* start */
+  0%   { opacity:0; transform: translate(-50%, 12px) scale(1); }
 
-      /* fade in (più evidente) */
-      8%   { opacity:1; transform: translate(-50%, 0px)  scale(var(--zoom-from)); }
+  /* fade in */
+  8%   { opacity:1; transform: translate(-50%, 0px)  scale(1); }
 
-      /* zoom lento mentre resta su */
-      90%  { opacity:1; transform: translate(-50%, 0px)  scale(var(--zoom-to)); }
+  /* zoom lento mentre è visibile */
+  90%  { opacity:1; transform: translate(-50%, 0px)  scale(1.05); }
 
-      /* fade out */
-      100% { opacity:0; transform: translate(-50%, -10px) scale(var(--zoom-to)); }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      .pattern, .pattern::before { animation:none !important; }
-      .msg{ opacity:1 !important; transform: translate(-50%,0) scale(1) !important; }
-      .msg.on{ animation:none !important; }
-    }
+  /* fade out */
+  100% { opacity:0; transform: translate(-50%, -10px) scale(1.05); }
+}
   </style>
 </head>
 
