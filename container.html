@@ -4,36 +4,44 @@
 <meta charset="utf-8" />
 
 <style>
-@import url(https://fonts.googleapis.com/css2?family=Anton&family=Roboto:700&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@700&display=swap);
 
 * { box-sizing: border-box; }
 
 html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
   overflow: hidden;
+  background: transparent;
 }
 
-body {
-  margin: 0;
+body{
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
-  font-size: 20px; /* aumentato */
+  font-size: 20px;
   line-height: 1.5em;
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 2px #000;
-  background: transparent;
+
+  /* IMPORTANTISSIMO: stabilizza il container assoluto */
+  position: relative;
 }
 
 /* CONTENITORE */
 #bits-log{
   position: absolute;
   inset: 0;
+
   padding: 12px;
-  background: rgba(88,7,7,0.7);
+  background: rgba(88,7,7,0.70);
   border-radius: 14px;
+
   display: flex;
   flex-direction: column;
+
+  /* per ancorare correttamente ::before */
+  position: absolute;
 }
 
 /* BORDO */
@@ -60,11 +68,11 @@ body {
   pointer-events:none;
 }
 
-/* HEADER (IDENTICO ALLA CHAT) */
+/* HEADER */
 #bits-header{
   font-family:'Anton', sans-serif;
-  font-size:1.4em;   /* stessa dimensione della chat */
-  letter-spacing:1px;
+  font-size: 1.35em;
+  letter-spacing: 1px;
 
   background: linear-gradient(
     to bottom,
@@ -75,11 +83,14 @@ body {
   color:#831d1c;
   text-shadow:none;
 
-  padding:6px 10px;
-  margin-bottom:10px;
-  border-radius:8px;
+  padding: 8px 12px;
+  margin: 0 0 10px 0;
+  border-radius: 10px;
   text-align:center;
   position:relative;
+
+  /* assicura che stia sopra eventuali overlay */
+  z-index: 1;
 }
 
 #bits-header::after{
@@ -106,70 +117,92 @@ body {
   display:flex;
   flex-direction:column;
   gap:10px;
+
+  /* evita che contenuti “spingano” fuori */
+  min-height: 0;
+  z-index: 1;
 }
 
 /* RIGHE */
 .bits-row{
   display:grid;
-  grid-template-columns: 52px 1fr; /* colonna numeri stretta ma allineata */
-  align-items:center;
-  gap:8px;
 
-  padding:8px 10px;
-  border-radius:10px;
+  /* PRIMA COLONNA AUTO (non più 52px), seconda prende il resto */
+  grid-template-columns: max-content 1fr;
+
+  align-items:center;
+  column-gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 10px;
 
   background: rgba(0,0,0,0.15);
-  border:1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.12);
+
+  /* stabilità visiva */
+  overflow: hidden;
 }
 
+/* sinistra: etichetta */
 .bits-amount{
-  text-align:right;   /* numeri allineati in colonna */
+  text-align:right;
   font-family:'Anton', sans-serif;
-  font-size:1.25em;
+  font-size: 1.10em;
   letter-spacing:.5px;
-  white-space:nowrap;
+
+  /* NON andare a capo nella colonna sinistra */
+  white-space: nowrap;
+
+  /* se la label è troppo lunga, la tronchiamo con ellissi */
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* destra: descrizione */
 .bits-desc{
-  font-size:0.9em; /* più grande */
+  font-size: 0.95em;
+  min-width: 0; /* fondamentale per text-overflow corretti in grid */
 }
 
 .bits-desc::before{
   content:"— ";
   opacity:.9;
 }
+
+/* piccolo tweak per container piccoli */
+@media (max-width: 420px){
+  body{ font-size: 18px; }
+  .bits-amount{ max-width: 170px; }
+}
 </style>
 </head>
 
 <body>
+  <div id="bits-log">
+    <div id="bits-header">Aumenta la durata della Live!</div>
 
-<div id="bits-log">
-  <div id="bits-header">Aumenta la durata della Live!</div>
+    <div id="bits-inner">
+      <div class="bits-row">
+        <div class="bits-amount">Follow</div>
+        <div class="bits-desc">+1 minuto di Live</div>
+      </div>
 
-  <div id="bits-inner">
+      <div class="bits-row">
+        <div class="bits-amount">ogni 1€ donato</div>
+        <div class="bits-desc"><i>+1 minuto di Live</i></div>
+      </div>
 
+      <div class="bits-row">
+        <div class="bits-amount">ogni 100 Bit</div>
+        <div class="bits-desc">+2 minuti di Live</div>
+      </div>
 
-    <div class="bits-row">
-      <div class="bits-amount">Follow</div>
-      <div class="bits-desc">+1 minuto di Live</div>
-    </div>
-
-    <div class="bits-row">
-      <div class="bits-amount">ogni 1€ donato</div>
-      <div class="bits-desc"><i>+1 minuto di Live</i></div>
-    </div>
-
-        <div class="bits-row">
-      <div class="bits-amount">ogni 100 Bit</div>
-      <div class="bits-desc">+2 minuti di Live</div>
-    </div>
-    
-    <div class="bits-row">
-      <div class="bits-amount">Sub</div>
-      <div class="bits-desc"><i>+5 Minuti di Live</i></div>
+      <div class="bits-row">
+        <div class="bits-amount">Sub</div>
+        <div class="bits-desc"><i>+5 Minuti di Live</i></div>
+      </div>
     </div>
   </div>
-</div>
-
 </body>
 </html>
