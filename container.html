@@ -23,13 +23,11 @@ body{
   line-height: 1.5em;
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 2px #000;
-
-  /* IMPORTANTISSIMO: stabilizza il container assoluto */
   position: relative;
 }
 
 /* CONTENITORE */
-#log{
+#panel{
   position: absolute;
   inset: 0;
 
@@ -39,13 +37,10 @@ body{
 
   display: flex;
   flex-direction: column;
-
-  /* per ancorare correttamente ::before */
-  position: absolute;
 }
 
 /* BORDO */
-#log::before{
+#panel::before{
   content:"";
   position:absolute;
   inset:0;
@@ -73,7 +68,6 @@ body{
   font-family:'Anton', sans-serif;
   font-size: 1.35em;
   letter-spacing: 1px;
-  text-transform: uppercase;
 
   background: linear-gradient(
     to bottom,
@@ -89,8 +83,6 @@ body{
   border-radius: 10px;
   text-align:center;
   position:relative;
-
-  /* assicura che stia sopra eventuali overlay */
   z-index: 1;
 }
 
@@ -114,12 +106,10 @@ body{
 }
 
 /* LISTA */
-#inner{
+#list{
   display:flex;
   flex-direction:column;
   gap:10px;
-
-  /* evita che contenuti “spingano” fuori */
   min-height: 0;
   z-index: 1;
 }
@@ -128,8 +118,8 @@ body{
 .row{
   display:grid;
 
-  /* PRIMA COLONNA AUTO (non più 52px), seconda prende il resto */
-  grid-template-columns: max-content 1fr;
+  /* colonna sinistra uniforme per tutte le righe */
+  grid-template-columns: minmax(140px, 220px) 1fr;
 
   align-items:center;
   column-gap: 10px;
@@ -139,31 +129,25 @@ body{
 
   background: rgba(0,0,0,0.15);
   border: 1px solid rgba(255,255,255,0.12);
-
-  /* stabilità visiva */
   overflow: hidden;
 }
 
-/* sinistra: etichetta */
-.amount{
+/* sinistra */
+.label{
   text-align:right;
   font-family:'Anton', sans-serif;
   font-size: 1.10em;
   letter-spacing:.5px;
 
-  /* NON andare a capo nella colonna sinistra */
   white-space: nowrap;
-
-  /* se la label è troppo lunga, la tronchiamo con ellissi */
-  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* destra: descrizione */
+/* destra */
 .desc{
   font-size: 0.95em;
-  min-width: 0; /* fondamentale per text-overflow corretti in grid */
+  min-width: 0;
 }
 
 .desc::before{
@@ -171,37 +155,37 @@ body{
   opacity:.9;
 }
 
-/* piccolo tweak per container piccoli */
+/* tweak per container piccoli */
 @media (max-width: 420px){
   body{ font-size: 18px; }
-  .amount{ max-width: 170px; }
+  .row{ grid-template-columns: minmax(120px, 180px) 1fr; }
 }
 </style>
 </head>
 
 <body>
-  <div id="log">
+  <div id="panel">
     <div id="header">Aumenta la durata della Live!</div>
 
-    <div id="inner">
-      <div class="bits-row">
-        <div class="amount">Follow</div>
+    <div id="list">
+      <div class="row">
+        <div class="label">Follow</div>
         <div class="desc">+1 minuto di Live</div>
       </div>
 
       <div class="row">
-        <div class="amount">ogni 1€ donato</div>
-        <div class="desc">+1 minuto di Live</div>
+        <div class="label">ogni 1€ donato</div>
+        <div class="desc"><i>+1 minuto di Live</i></div>
       </div>
 
       <div class="row">
-        <div class="amount">ogni 100 Bit</div>
+        <div class="label">ogni 100 Bit</div>
         <div class="desc">+2 minuti di Live</div>
       </div>
 
-      <div class="bits-row">
-        <div class="amount">Sub</div>
-        <div class="desc">+5 Minuti di Live</div>
+      <div class="row">
+        <div class="label">Sub</div>
+        <div class="desc"><i>+5 Minuti di Live</i></div>
       </div>
     </div>
   </div>
