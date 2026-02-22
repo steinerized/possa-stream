@@ -2,41 +2,34 @@
 <html lang="it">
 <head>
 <meta charset="utf-8" />
-
 <style>
 @import url(https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@700&display=swap);
 
-* { box-sizing: border-box; }
-
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: transparent;
+*{ box-sizing:border-box; }
+html,body{
+  height:100%; width:100%;
+  margin:0; overflow:hidden;
+  background:transparent;
 }
-
 body{
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 1.5em;
-  color: #fff;
-  text-shadow: 0 0 1px #000, 0 0 2px #000;
-  position: relative;
+  font-family:'Roboto',sans-serif;
+  font-weight:700;
+  font-size:20px;
+  line-height:1.5em;
+  color:#fff;
+  text-shadow:0 0 1px #000, 0 0 2px #000;
+  position:relative;
 }
 
 /* CONTENITORE */
 #panel{
-  position: absolute;
-  inset: 0;
-
-  padding: 12px;
-  background: rgba(88,7,7,0.70);
-  border-radius: 14px;
-
-  display: flex;
-  flex-direction: column;
+  position:absolute;
+  inset:0;
+  padding:12px;
+  background:rgba(88,7,7,0.70);
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
 }
 
 /* BORDO */
@@ -46,61 +39,45 @@ body{
   inset:0;
   border-radius:14px;
   padding:2px;
-  background: linear-gradient(
-    135deg,
+  background:linear-gradient(135deg,
     rgba(255,255,255,0.95),
     rgba(255,255,255,0.45),
     rgba(255,255,255,0.95)
   );
-
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-
-  box-shadow: 0 0 12px rgba(255,255,255,0.25);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+  box-shadow:0 0 12px rgba(255,255,255,0.25);
   pointer-events:none;
 }
 
 /* HEADER */
 #header{
-  font-family:'Anton', sans-serif;
-  font-size: 1.35em;
-  letter-spacing: 1px;
-
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.95),
-    rgba(240,240,240,0.95)
-  );
-
+  font-family:'Anton',sans-serif;
+  font-size:1.35em;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
   color:#831d1c;
   text-shadow:none;
-
-  padding: 8px 12px;
-  margin: 0 0 10px 0;
-  border-radius: 10px;
+  padding:8px 12px;
+  margin:0 0 10px 0;
+  border-radius:10px;
   text-align:center;
   position:relative;
-  z-index: 1;
+  z-index:1;
 }
-
 #header::after{
   content:"";
   position:absolute;
-  left:10%;
-  right:10%;
+  left:10%; right:10%;
   bottom:-3px;
   height:2px;
-
-  background: linear-gradient(
-    to right,
+  background:linear-gradient(to right,
     rgba(255,255,255,0),
     rgba(255,255,255,0.9),
     rgba(255,255,255,0)
   );
-
   border-radius:2px;
   opacity:.8;
 }
@@ -110,55 +87,52 @@ body{
   display:flex;
   flex-direction:column;
   gap:10px;
-  min-height: 0;
-  z-index: 1;
+  min-height:0;
+  z-index:1;
 }
 
 /* RIGHE */
 .row{
   display:grid;
 
-  /* colonna sinistra uniforme per tutte le righe */
-  grid-template-columns: minmax(140px, 220px) 1fr;
+  /* colonna sinistra uniforme ma più “compatta” */
+  grid-template-columns: minmax(120px, 200px) 1fr;
 
   align-items:center;
-  column-gap: 10px;
+  column-gap:8px;
 
-  padding: 10px 12px;
-  border-radius: 10px;
-
-  background: rgba(0,0,0,0.15);
-  border: 1px solid rgba(255,255,255,0.12);
-  overflow: hidden;
+  padding:10px 12px;
+  border-radius:10px;
+  background:rgba(0,0,0,0.15);
+  border:1px solid rgba(255,255,255,0.12);
+  overflow:hidden;
 }
 
-/* sinistra */
+/* sinistra: ora allineata a sinistra */
 .label{
-  text-align:right;
-  font-family:'Anton', sans-serif;
-  font-size: 1.10em;
+  text-align:left;
+  font-family:'Anton',sans-serif;
+  font-size:1.10em;
   letter-spacing:.5px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 /* destra */
 .desc{
-  font-size: 0.95em;
-  min-width: 0;
+  font-size:0.95em;
+  min-width:0;
 }
 
+/* se vuoi il trattino, rimetti "— " */
 .desc::before{
-  content:"— ";
-  opacity:.9;
+  content:"";
 }
 
-/* tweak per container piccoli */
 @media (max-width: 420px){
-  body{ font-size: 18px; }
-  .row{ grid-template-columns: minmax(120px, 180px) 1fr; }
+  body{ font-size:18px; }
+  .row{ grid-template-columns: minmax(110px, 170px) 1fr; }
 }
 </style>
 </head>
