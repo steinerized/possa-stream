@@ -15,7 +15,7 @@ html,body{
 body{
   font-family:'Roboto',sans-serif;
   font-weight:700;
-  font-size: clamp(16px, 1.8vw, 20px); /* non schiaccia a 1000 */
+  font-size: clamp(14px, 1.6vw, 20px); /* non schiaccia a 1000 */
   line-height: 1.35em;
   color:#fff;
   text-shadow:0 0 1px #000, 0 0 2px #000;
@@ -128,25 +128,32 @@ body{
   overflow:hidden;
 }
 
-/* label: colonna “stile bits” (allineata a destra), ma NON si schiaccia */
 .label{
   font-family:'Anton',sans-serif;
   letter-spacing:.5px;
   text-align:right;
 
-  flex: 0 0 clamp(120px, 38%, 190px); /* larghezza adattiva */
-  min-width: 110px;
+  /* scala anche lei */
+  font-size: clamp(12px, 1.6vw, 20px);
+  line-height: 1.05;
 
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  /* larghezza adattiva */
+  flex: 0 0 clamp(110px, 34%, 190px);
+  min-width: 100px;
+
+  white-space: nowrap;   /* la label non va a capo */
 }
 
-/* desc: prende il resto e va a capo se serve */
 .desc{
-  flex: 1 1 auto;
+  flex:1 1 auto;
   min-width:0;
-  font-size: 0.95em;
+
+  /* scala anche la descrizione */
+  font-size: clamp(12px, 1.4vw, 18px);
+  line-height: 1.15;
+
+  /* qui permettiamo a capo se serve (meglio che tagliare) */
+  white-space: normal;
 }
 .desc::before{ content:"— "; opacity:.9; }
 
