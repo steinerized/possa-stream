@@ -29,7 +29,7 @@ body{
 }
 
 /* CONTENITORE */
-#bits-log{
+#log{
   position: absolute;
   inset: 0;
 
@@ -45,7 +45,7 @@ body{
 }
 
 /* BORDO */
-#bits-log::before{
+#log::before{
   content:"";
   position:absolute;
   inset:0;
@@ -69,10 +69,11 @@ body{
 }
 
 /* HEADER */
-#bits-header{
+#header{
   font-family:'Anton', sans-serif;
   font-size: 1.35em;
   letter-spacing: 1px;
+  text-transform: uppercase;
 
   background: linear-gradient(
     to bottom,
@@ -93,7 +94,7 @@ body{
   z-index: 1;
 }
 
-#bits-header::after{
+#header::after{
   content:"";
   position:absolute;
   left:10%;
@@ -113,7 +114,7 @@ body{
 }
 
 /* LISTA */
-#bits-inner{
+#inner{
   display:flex;
   flex-direction:column;
   gap:10px;
@@ -124,7 +125,7 @@ body{
 }
 
 /* RIGHE */
-.bits-row{
+.row{
   display:grid;
 
   /* PRIMA COLONNA AUTO (non più 52px), seconda prende il resto */
@@ -144,7 +145,7 @@ body{
 }
 
 /* sinistra: etichetta */
-.bits-amount{
+.amount{
   text-align:right;
   font-family:'Anton', sans-serif;
   font-size: 1.10em;
@@ -160,12 +161,12 @@ body{
 }
 
 /* destra: descrizione */
-.bits-desc{
+.desc{
   font-size: 0.95em;
   min-width: 0; /* fondamentale per text-overflow corretti in grid */
 }
 
-.bits-desc::before{
+.desc::before{
   content:"— ";
   opacity:.9;
 }
@@ -173,34 +174,34 @@ body{
 /* piccolo tweak per container piccoli */
 @media (max-width: 420px){
   body{ font-size: 18px; }
-  .bits-amount{ max-width: 170px; }
+  .amount{ max-width: 170px; }
 }
 </style>
 </head>
 
 <body>
-  <div id="bits-log">
-    <div id="bits-header">Aumenta la durata della Live!</div>
+  <div id="log">
+    <div id="header">Aumenta la durata della Live!</div>
 
-    <div id="bits-inner">
+    <div id="inner">
       <div class="bits-row">
-        <div class="bits-amount">Follow</div>
-        <div class="bits-desc">+1 minuto di Live</div>
+        <div class="amount">Follow</div>
+        <div class="desc">+1 minuto di Live</div>
+      </div>
+
+      <div class="row">
+        <div class="amount">ogni 1€ donato</div>
+        <div class="desc">+1 minuto di Live</div>
+      </div>
+
+      <div class="row">
+        <div class="amount">ogni 100 Bit</div>
+        <div class="desc">+2 minuti di Live</div>
       </div>
 
       <div class="bits-row">
-        <div class="bits-amount">ogni 1€ donato</div>
-        <div class="bits-desc"><i>+1 minuto di Live</i></div>
-      </div>
-
-      <div class="bits-row">
-        <div class="bits-amount">ogni 100 Bit</div>
-        <div class="bits-desc">+2 minuti di Live</div>
-      </div>
-
-      <div class="bits-row">
-        <div class="bits-amount">Sub</div>
-        <div class="bits-desc"><i>+5 Minuti di Live</i></div>
+        <div class="amount">Sub</div>
+        <div class="desc">+5 Minuti di Live</div>
       </div>
     </div>
   </div>
