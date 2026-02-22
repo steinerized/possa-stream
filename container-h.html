@@ -15,8 +15,8 @@ html,body{
 body{
   font-family:'Roboto',sans-serif;
   font-weight:700;
-  font-size: clamp(14px, 1.6vw, 20px); /* non schiaccia a 1000 */
-  line-height: 1.35em;
+  font-size: clamp(12px, 1.3vw, 18px); /* ↓ ridotto */
+  line-height: 1.25em;
   color:#fff;
   text-shadow:0 0 1px #000, 0 0 2px #000;
   position:relative;
@@ -50,16 +50,13 @@ body{
   pointer-events:none;
 }
 
-/* GRID RESPONSIVE: prova a fare 4 colonne, ma se non c'è spazio va a 3/2 */
+/* GRID RESPONSIVE */
 #grid{
   position:relative;
   z-index:1;
   height:100%;
   display:grid;
-
-  /* CHIAVE: minmax -> se il container è stretto, le colonne vanno a capo */
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-
   gap:12px;
   align-items:stretch;
 }
@@ -70,34 +67,28 @@ body{
   display:flex;
   flex-direction:column;
   gap:10px;
-
   padding:10px;
   border-radius:12px;
   background:rgba(0,0,0,0.10);
   border:1px solid rgba(255,255,255,0.10);
 }
 
-/* HEADER (solo colonna 1) */
+/* HEADER */
 .header{
   font-family:'Anton',sans-serif;
-  font-size: clamp(12px, 2.0vw, 24px);  /* ✅ si rimpicciolisce */
-  letter-spacing: 1px;
-  line-height: 1;                      /* ✅ evita “altezza” extra */
+  font-size: clamp(10px, 1.6vw, 20px); /* ↓ ridotto */
+  letter-spacing:1px;
+  line-height: 1;                      /* ✅ 1 riga pulita */
+  white-space: nowrap;                 /* ✅ mai a capo */
 
-  background: linear-gradient(to bottom,
-    rgba(255,255,255,0.95),
-    rgba(240,240,240,0.95)
-  );
-
+  background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
   color:#831d1c;
   text-shadow:none;
 
-  padding: 8px 10px;
-  border-radius: 10px;
-  text-align: center;
-  position: relative;
-
-  white-space: nowrap;                 /* ✅ MAI a capo */
+  padding:8px 10px;
+  border-radius:10px;
+  text-align:center;
+  position:relative;
 }
 
 .header::after{
@@ -115,46 +106,45 @@ body{
   opacity:.8;
 }
 
-/* ROW = FLEX (come vuoi tu) */
+/* ROW = FLEX */
 .row{
   display:flex;
   align-items:center;
   gap:10px;
 
-  padding:10px 12px;
+  padding: 8px 10px; /* ↓ padding ridotto */
   border-radius:10px;
   background:rgba(0,0,0,0.15);
   border:1px solid rgba(255,255,255,0.12);
   overflow:hidden;
 }
 
+/* LABEL */
 .label{
   font-family:'Anton',sans-serif;
   letter-spacing:.5px;
   text-align:right;
 
-  /* scala anche lei */
-  font-size: clamp(12px, 1.6vw, 20px);
+  font-size: clamp(11px, 1.3vw, 17px); /* ↓ ridotto */
   line-height: 1.05;
 
-  /* larghezza adattiva */
-  flex: 0 0 clamp(110px, 34%, 190px);
-  min-width: 100px;
+  flex: 0 0 clamp(100px, 32%, 170px);  /* ↓ più compatto */
+  min-width: 92px;
 
-  white-space: nowrap;   /* la label non va a capo */
+  white-space:nowrap;
 }
 
+/* DESC */
 .desc{
   flex:1 1 auto;
   min-width:0;
 
-  /* scala anche la descrizione */
-  font-size: clamp(12px, 1.4vw, 18px);
+  font-size: clamp(11px, 1.2vw, 16px); /* ↓ ridotto */
   line-height: 1.15;
 
-  /* qui permettiamo a capo se serve (meglio che tagliare) */
-  white-space: normal;
+  white-space: normal; /* va a capo solo se serve */
 }
+
 .desc::before{ content:"— "; opacity:.9; }
 
 /* Colonna 4 vuota */
@@ -165,12 +155,11 @@ body{
   border:1px dashed rgba(255,255,255,0.18);
 }
 
-/* Se diventa MOLTO stretto, riduci un pelo padding per non “impastare” */
+/* un filo più compatto sotto i 900px */
 @media (max-width: 900px){
   #panel{ padding:10px; }
   #grid{ gap:10px; }
   .col{ padding:9px; }
-  .row{ padding:9px 10px; }
 }
 </style>
 </head>
@@ -204,11 +193,11 @@ body{
       <div class="col">
         <div class="row">
           <div class="label">Sub</div>
-          <div class="desc">+5 minuti di Live</div>
+          <div class="desc"><i>+5 minuti di Live</i></div>
         </div>
         <div class="row">
           <div class="label">Prime</div>
-          <div class="desc">+5 minuti di Live</div>
+          <div class="desc"><i>+5 minuti di Live</i></div>
         </div>
       </div>
 
