@@ -80,15 +80,24 @@ body{
 /* HEADER (solo colonna 1) */
 .header{
   font-family:'Anton',sans-serif;
-  font-size: clamp(18px, 2.2vw, 24px);
-  letter-spacing:1px;
-  background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
+  font-size: clamp(12px, 2.0vw, 24px);  /* ✅ si rimpicciolisce */
+  letter-spacing: 1px;
+  line-height: 1;                      /* ✅ evita “altezza” extra */
+
+  background: linear-gradient(to bottom,
+    rgba(255,255,255,0.95),
+    rgba(240,240,240,0.95)
+  );
+
   color:#831d1c;
   text-shadow:none;
-  padding:8px 10px;
-  border-radius:10px;
-  text-align:center;
-  position:relative;
+
+  padding: 8px 10px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+
+  white-space: nowrap;                 /* ✅ MAI a capo */
 }
 
 .header::after{
