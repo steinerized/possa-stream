@@ -15,7 +15,10 @@ html,body{
 body{
   font-family:'Roboto',sans-serif;
   font-weight:700;
-  font-size: clamp(12px, 1.3vw, 18px); /* ↓ ridotto */
+
+  /* +2px rispetto a prima */
+  font-size: clamp(14px, 1.3vw, 20px);
+
   line-height: 1.25em;
   color:#fff;
   text-shadow:0 0 1px #000, 0 0 2px #000;
@@ -56,30 +59,41 @@ body{
   z-index:1;
   height:100%;
   display:grid;
+
+  /* 4 colonne quando c'è spazio, altrimenti va a capo */
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap:12px;
+
+  /* ↓ spazi ridotti tra colonne/box */
+  gap:8px;
+
   align-items:stretch;
 }
 
-/* COLONNA */
+/* COLONNE: tolto riquadro scuro attorno */
 .col{
   min-width:0;
   display:flex;
   flex-direction:column;
-  gap:10px;
-  padding:10px;
-  border-radius:12px;
-  background:rgba(0,0,0,0.10);
-  border:1px solid rgba(255,255,255,0.10);
+
+  /* ↓ spazi ridotti interni */
+  gap:8px;
+
+  padding:0;                 /* niente “card” */
+  background:transparent;     /* niente granata scuro */
+  border:none;
+  border-radius:0;
 }
 
-/* HEADER */
+/* HEADER: resta “badge” chiaro */
 .header{
   font-family:'Anton',sans-serif;
-  font-size: clamp(10px, 1.6vw, 20px); /* ↓ ridotto */
+
+  /* +2px rispetto a prima */
+  font-size: clamp(12px, 1.6vw, 22px);
+
   letter-spacing:1px;
-  line-height: 1;                      /* ✅ 1 riga pulita */
-  white-space: nowrap;                 /* ✅ mai a capo */
+  line-height: 1;
+  white-space: nowrap;
 
   background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
   color:#831d1c;
@@ -106,17 +120,18 @@ body{
   opacity:.8;
 }
 
-/* ROW = FLEX */
+/* ROW: tolto riquadro/scuro/bordo intorno alle scritte */
 .row{
   display:flex;
   align-items:center;
-  gap:10px;
 
-  padding: 8px 10px; /* ↓ padding ridotto */
-  border-radius:10px;
-  background:rgba(0,0,0,0.15);
-  border:1px solid rgba(255,255,255,0.12);
-  overflow:hidden;
+  /* ↓ più compatto */
+  gap:8px;
+  padding:0;
+
+  background:transparent;
+  border:none;
+  border-radius:0;
 }
 
 /* LABEL */
@@ -125,11 +140,13 @@ body{
   letter-spacing:.5px;
   text-align:right;
 
-  font-size: clamp(11px, 1.3vw, 17px); /* ↓ ridotto */
+  /* +2px rispetto a prima */
+  font-size: clamp(13px, 1.3vw, 19px);
+
   line-height: 1.05;
 
-  flex: 0 0 clamp(100px, 32%, 170px);  /* ↓ più compatto */
-  min-width: 92px;
+  flex: 0 0 clamp(110px, 32%, 180px);
+  min-width: 100px;
 
   white-space:nowrap;
 }
@@ -139,27 +156,24 @@ body{
   flex:1 1 auto;
   min-width:0;
 
-  font-size: clamp(11px, 1.2vw, 16px); /* ↓ ridotto */
-  line-height: 1.15;
+  /* +2px rispetto a prima */
+  font-size: clamp(13px, 1.2vw, 18px);
 
-  white-space: normal; /* va a capo solo se serve */
+  line-height: 1.15;
+  white-space: normal;
 }
 
 .desc::before{ content:"— "; opacity:.9; }
 
-/* Colonna 4 vuota */
+/* Colonna 4 vuota: proprio vuota */
 .empty{
   flex:1;
-  border-radius:10px;
-  background:rgba(0,0,0,0.08);
-  border:1px dashed rgba(255,255,255,0.18);
 }
 
 /* un filo più compatto sotto i 900px */
 @media (max-width: 900px){
   #panel{ padding:10px; }
-  #grid{ gap:10px; }
-  .col{ padding:9px; }
+  #grid{ gap:8px; }
 }
 </style>
 </head>
@@ -170,22 +184,22 @@ body{
 
       <!-- COLONNA 1: header + 1 row -->
       <div class="col">
-        <div class="header">AUMENTA DURATA DELLA LIVE!</div>
+        <div class="header">Aumenta la durata della Live!</div>
         <div class="row">
           <div class="label">Follow</div>
-          <div class="desc">+1' di Live</div>
+          <div class="desc">+1 minuto di Live</div>
         </div>
       </div>
 
       <!-- COLONNA 2: 2 row -->
       <div class="col">
         <div class="row">
-          <div class="label">x1€ donato</div>
-          <div class="desc">+1' di Live</div>
+          <div class="label">ogni 1€ donato</div>
+          <div class="desc"><i>+1 minuto di Live</i></div>
         </div>
         <div class="row">
-          <div class="label">x100 Bit</div>
-          <div class="desc">+2' di Live</div>
+          <div class="label">ogni 100 Bit</div>
+          <div class="desc">+2 minuti di Live</div>
         </div>
       </div>
 
@@ -193,11 +207,11 @@ body{
       <div class="col">
         <div class="row">
           <div class="label">Sub</div>
-          <div class="desc">+5' di Live</div>
+          <div class="desc"><i>+5 minuti di Live</i></div>
         </div>
         <div class="row">
           <div class="label">Prime</div>
-          <div class="desc">+5' di Live</div>
+          <div class="desc"><i>+5 minuti di Live</i></div>
         </div>
       </div>
 
