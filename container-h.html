@@ -15,10 +15,7 @@ html,body{
 body{
   font-family:'Roboto',sans-serif;
   font-weight:700;
-
-  /* +2px rispetto a prima */
-  font-size: clamp(14px, 1.3vw, 20px);
-
+  font-size: clamp(12px, 1.1vw, 18px); /* Leggermente ridotto per la riga singola */
   line-height: 1.25em;
   color:#fff;
   text-shadow:0 0 1px #000, 0 0 2px #000;
@@ -29,9 +26,11 @@ body{
 #panel{
   position:absolute;
   inset:0;
-  padding:12px;
+  padding:8px 12px;
   background:rgba(88,7,7,0.70);
   border-radius:14px;
+  display: flex;
+  align-items: center; /* Centra tutto verticalmente nel pannello */
 }
 
 /* BORDER */
@@ -41,182 +40,114 @@ body{
   inset:0;
   border-radius:14px;
   padding:2px;
-  background:linear-gradient(135deg,
-    rgba(255,255,255,0.95),
-    rgba(255,255,255,0.45),
-    rgba(255,255,255,0.95)
-  );
+  background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.45), rgba(255,255,255,0.95));
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;
-          mask-composite:exclude;
-  box-shadow:0 0 12px rgba(255,255,255,0.25);
+  mask-composite:exclude;
   pointer-events:none;
 }
 
-/* GRID RESPONSIVE */
+/* GRID FORZATA: 5 COLONNE, 1 RIGA */
 #grid{
-  position:relative;
-  z-index:1;
-  height:100%;
-  display:grid;
-
-  /* 4 colonne quando c'è spazio, altrimenti va a capo */
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-
-  /* ↓ spazi ridotti tra colonne/box */
-  gap:4px;
-
-  align-items:stretch;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); 
+  grid-template-rows: 1fr;
+  gap: 10px;
+  align-items: center;
 }
 
-/* COLONNE: tolto riquadro scuro attorno */
 .col{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-
-  /* ↓ spazi ridotti interni */
-  gap:8px;
-
-  padding:0;                 /* niente “card” */
-  background:transparent;     /* niente granata scuro */
-  border:none;
-  border-radius:0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
 }
 
-/* HEADER: resta “badge” chiaro */
+/* HEADER */
 .header{
   font-family:'Anton',sans-serif;
-
-  /* +2px rispetto a prima */
-  font-size: clamp(12px, 1.6vw, 22px);
-
+  font-size: clamp(10px, 1.4vw, 20px);
   letter-spacing:1px;
-  line-height: 1;
-  white-space: nowrap;
-
   background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
   color:#831d1c;
   text-shadow:none;
-
-  padding:8px 10px;
-  border-radius:10px;
+  padding:5px 8px;
+  border-radius:8px;
   text-align:center;
-  position:relative;
+  white-space: nowrap;
 }
 
-.header::after{
-  content:"";
-  position:absolute;
-  left:10%; right:10%;
-  bottom:-3px;
-  height:2px;
-  background:linear-gradient(to right,
-    rgba(255,255,255,0),
-    rgba(255,255,255,0.9),
-    rgba(255,255,255,0)
-  );
-  border-radius:2px;
-  opacity:.8;
-}
-
-/* ROW: tolto riquadro/scuro/bordo intorno alle scritte */
+/* ROW */
 .row{
-  display:flex;
-  align-items:center;
-
-  /* ↓ più compatto */
-  gap:8px;
-  padding:0;
-
-  background:transparent;
-  border:none;
-  border-radius:0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 /* LABEL */
 .label{
   font-family:'Anton',sans-serif;
-  letter-spacing:.5px;
-  text-align:right;
-
-  /* +2px rispetto a prima */
-  font-size: clamp(13px, 1.3vw, 19px);
-
-  line-height: 1.05;
-
-  flex: 0 0 clamp(110px, 32%, 180px);
-  min-width: 100px;
-
-  white-space:nowrap;
+  font-size: clamp(11px, 1.2vw, 17px);
+  text-align: right;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 /* DESC */
 .desc{
-  flex:1 1 auto;
-  min-width:0;
-
-  /* +2px rispetto a prima */
-  font-size: clamp(13px, 1.2vw, 18px);
-
-  line-height: 1.15;
-  white-space: normal;
+  font-size: clamp(11px, 1.1vw, 16px);
+  flex: 1 1 auto;
+  min-width: 0;
+  opacity: 0.95;
 }
+.desc::before{ content:"— "; }
 
-.desc::before{ content:"— "; opacity:.9; }
+.empty{ flex: 1; }
 
-/* Colonna 4 vuota: proprio vuota */
-.empty{
-  flex:1;
-}
-
-/* un filo più compatto sotto i 900px */
-@media (max-width: 900px){
-  #panel{ padding:10px; }
-  #grid{ gap:8px; }
-}
 </style>
 </head>
-
 <body>
+
   <div id="panel">
     <div id="grid">
 
-      <!-- COLONNA 1: header + 1 row -->
       <div class="col">
         <div class="header">ALLUNGA LA LIVE!</div>
       </div>
 
-      <!-- COLONNA 2: 2 row -->
       <div class="col">
         <div class="row">
           <div class="label">FOLLOW</div>
-          <div class="desc">+1' di Live</div>
-        </div>
-        <div class="row">
-          <div class="label">OGNI 1€ DONATO</div>
-          <div class="desc"><i>+2' di Live</i></div>
+          <div class="desc">+1'</div>
         </div>
       </div>
 
-      <!-- COLONNA 3: 2 row -->
       <div class="col">
         <div class="row">
-          <div class="label">OGNI 100 BIT</div>
-          <div class="desc">+3' di Live</div>
-        </div>
-        <div class="row">
-          <div class="label">SUB/PRIME</div>
-          <div class="desc"><i>+5' di Live</i></div>
+          <div class="label">100 BIT</div>
+          <div class="desc">+3'</div>
         </div>
       </div>
 
-      <!-- COLONNA 4: vuota -->
       <div class="col">
-        <div class="empty"></div>
+      <div class="row">
+          <div class="label">100 BIT</div>
+          <div class="desc">+3'</div>
+          </div>
+      </div>
+
+      <div class="col">
+        <div class="row">
+          <div class="label">SUB</div>
+          <div class="desc">+5'</div>
+          </div>
       </div>
 
     </div>
   </div>
+
 </body>
 </html>
