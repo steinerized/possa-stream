@@ -8,17 +8,19 @@
 <style>
   html, body { margin:0; padding:0; background:transparent; }
 
-  :root{
+  :root {
     --W: 1920px;
     --H: 1080px;
 
-    --holeW: 1436px;
-    --holeH: 893px;
+    /* 1. INPUT: Definisci la posizione del buco dai 4 lati */
+    --holeL: 30px;   /* Sinistra */
+    --holeB: 70px;   /* Basso */
+    --holeT: 117px;  /* Alto (calcolato per dare 893px di altezza) */
+    --holeR: 454px;  /* Destra (calcolato per dare 1436px di larghezza) */
 
-    --holeL: 30px;  /* sinistra */
-    --holeB: 70px;  /* basso */
-    --holeT: calc(var(--H) - var(--holeB) - var(--holeH));
-    --holeR: calc(var(--W) - var(--holeL) - var(--holeW));
+    /* 2. FUNZIONI: Larghezza e Altezza ora sono in funzione dei margini sopra */
+    --holeW: calc(var(--W) - var(--holeL) - var(--holeR));
+    --holeH: calc(var(--H) - var(--holeT) - var(--holeB));
 
     /* sfondo */
     --bg:
@@ -36,13 +38,13 @@
     height: var(--H);
     position: relative;
     overflow: hidden;
-    background: transparent; /* fondamentale */
+    background: transparent;
   }
 
   .panel{
     position:absolute;
     background-image: var(--bg);
-    background-size: var(--W) var(--H);  /* importantissimo: allinea tutto */
+    background-size: var(--W) var(--H);
     background-repeat: no-repeat;
   }
 
@@ -79,7 +81,6 @@
     background-position: calc(-1 * (var(--holeL) + var(--holeW))) calc(-1 * var(--holeT));
   }
 
-  /* (opzionale) bordino sottilissimo attorno al buco, senza riempire il centro */
   .hole-outline{
     position:absolute;
     left: var(--holeL);
@@ -102,9 +103,7 @@
     <div class="panel left"></div>
     <div class="panel right"></div>
     <div class="panel bottom"></div>
-
     <div class="hole-outline"></div>
-    <!-- Il buco NON ESISTE come elemento: è semplicemente spazio vuoto trasparente -->
   </div>
 </body>
 </html>
