@@ -11,24 +11,27 @@
 html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
+  background: transparent;
   overflow: hidden;
 }
 
 body {
-  margin: 0;
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
-  font-size: 20px; /* aumentato */
+  font-size: 20px;
   line-height: 1.5em;
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 2px #000;
-  background: transparent;
 }
 
-/* CONTENITORE */
-#bits-log{
+/* CONTENITORE: Ora si stringe sul contenuto */
+#bits-log {
   position: absolute;
-  inset: 0;
+  top: 10px;
+  left: 10px;
+  width: max-content; /* Larghezza minima basata sul testo */
+  min-width: 200px;    /* Opzionale: evita che sia troppo stretto se c'è poco testo */
   padding: 8px;
   background: rgba(88,7,7,0.7);
   border-radius: 14px;
@@ -37,7 +40,7 @@ body {
 }
 
 /* BORDO */
-#bits-log::before{
+#bits-log::before {
   content:"";
   position:absolute;
   inset:0;
@@ -49,94 +52,64 @@ body {
     rgba(255,255,255,0.45),
     rgba(255,255,255,0.95)
   );
-
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
-
-  box-shadow: 0 0 12px rgba(255,255,255,0.25);
   pointer-events:none;
 }
 
-/* HEADER (IDENTICO ALLA CHAT) */
-#bits-header{
+/* HEADER */
+#bits-header {
   font-family:'Anton', sans-serif;
-  font-size:1.4em;   /* stessa dimensione della chat */
+  font-size:1.4em;
   letter-spacing:1px;
-
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.95),
-    rgba(240,240,240,0.95)
-  );
-
+  background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
   color:#831d1c;
   text-shadow:none;
-
-  padding:6px 10px;
+  padding:4px 10px;
   margin-bottom:10px;
   border-radius:8px;
   text-align:center;
-  position:relative;
-}
-
-#bits-header::after{
-  content:"";
-  position:absolute;
-  left:10%;
-  right:10%;
-  bottom:-3px;
-  height:2px;
-
-  background: linear-gradient(
-    to right,
-    rgba(255,255,255,0),
-    rgba(255,255,255,0.9),
-    rgba(255,255,255,0)
-  );
-
-  border-radius:2px;
-  opacity:.8;
 }
 
 /* LISTA */
-#bits-inner{
+#bits-inner {
   display:flex;
   flex-direction:column;
-  gap:10px;
-}
-
-/* RIGHE */
-.bits-row{
-  display:grid;
-  grid-template-columns: 52px 1fr; /* colonna numeri stretta ma allineata */
-  align-items:center;
   gap:8px;
+}
 
-  padding:8px 10px;
-  border-radius:10px;
-
+/* RIGHE: Larghezza automatica e no a capo */
+.bits-row {
+  display: grid;
+  grid-template-columns: auto auto; /* Stringe le colonne al minimo */
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 10px;
   background: rgba(0,0,0,0.15);
-  border:1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.12);
+  white-space: nowrap; /* Forza tutto su una riga */
 }
 
-.bits-amount{
-  text-align:right;   /* numeri allineati in colonna */
-  font-family:'Anton', sans-serif;
-  font-size:1.25em;
-  letter-spacing:.5px;
-  white-space:nowrap;
+.bits-amount {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.25em;
+  letter-spacing: .5px;
+  color: #fff;
+  min-width: 45px; /* Mantiene un minimo di allineamento per i numeri */
 }
 
-.bits-desc{
-  font-size:0.9em; /* più grande */
+.bits-desc {
+  font-size: 0.9em;
 }
 
-.bits-desc::before{
-  content:"— ";
-  opacity:.9;
+.bits-desc::before {
+  content: "— ";
+  opacity: .9;
 }
 </style>
 </head>
