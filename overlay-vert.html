@@ -2,123 +2,108 @@
 <html lang="it">
 <head>
 <meta charset="utf-8" />
-<title>Overlay Verticale</title>
+<meta name="viewport" content="width=1920,height=1080,initial-scale=1" />
+<title>Overlay (no mask)</title>
 
 <style>
-html,body{ margin:0; padding:0; background:transparent; }
+  html, body { margin:0; padding:0; background:transparent; }
 
-/* ===== PARAMETRI ===== */
-:root{
-  --W:1080px;
-  --H:1920px;
+  :root {
+    --W: 1080px;
+    --H: 1920px;
 
-  --holeW:1020px;
-  --holeH:720px;
+    /* 1. INPUT: Definisci la posizione del buco dai 4 lati */
+    --holeL: 5px;   /* Sinistra */
+    --holeB: 1314px;   /* Basso */
+    --holeT: 5px;  /* Alto (calcolato per dare 893px di altezza) */
+    --holeR: 5px;  /* Destra (calcolato per dare 1436px di larghezza) */
 
-  --holeL:30px;
-  --holeT:60px;
+    /* 2. FUNZIONI: Larghezza e Altezza ora sono in funzione dei margini sopra */
+    --holeW: calc(var(--W) - var(--holeL) - var(--holeR));
+    --holeH: calc(var(--H) - var(--holeT) - var(--holeB));
 
-  --holeR: calc(var(--W) - var(--holeW) - var(--holeL));
-  --holeB: calc(var(--H) - var(--holeH) - var(--holeT));
+    /* sfondo */
+    --bg:
+      repeating-linear-gradient(-35deg,
+        rgba(255,255,255,0.08) 0px,
+        rgba(255,255,255,0.08) 10px,
+        transparent 10px,
+        transparent 20px
+      ),
+      linear-gradient(90deg, #380303 0%, #530707 50%, #380303 100%);
+  }
 
-  --radius:5px;
+  #overlay{
+    width: var(--W);
+    height: var(--H);
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+  }
 
-  --stroke:3px;
-  --strokeColor: rgba(255,255,255,0.95);
-}
+  .panel{
+    position:absolute;
+    background-image: var(--bg);
+    background-size: var(--W) var(--H);
+    background-repeat: no-repeat;
+  }
 
-#overlay{
-  width:var(--W);
-  height:var(--H);
-  position:relative;
-  overflow:hidden;
-  background:transparent;
-}
+  /* TOP */
+  .top{
+    left:0; top:0;
+    width: var(--W);
+    height: var(--holeT);
+    background-position: 0px 0px;
+  }
 
-/* ===== SFONDO ===== */
-.panel{
-  position:absolute;
+  /* BOTTOM */
+  .bottom{
+    left:0; bottom:0;
+    width: var(--W);
+    height: var(--holeB);
+    background-position: 0px calc(-1 * (var(--H) - var(--holeB)));
+  }
 
-  background-image:
-    repeating-linear-gradient(
-      -35deg,
-      rgba(255,255,255,0.08) 0px,
-      rgba(255,255,255,0.08) 10px,
-      transparent 10px,
-      transparent 20px
-    ),
-    linear-gradient(
-      90deg,
-      #380303 0%,
-      #530707 50%,
-      #380303 100%
-    );
+  /* LEFT */
+  .left{
+    left:0; top: var(--holeT);
+    width: var(--holeL);
+    height: var(--holeH);
+    background-position: 0px calc(-1 * var(--holeT));
+  }
 
-  background-size:1080px 1920px;
-  background-repeat:no-repeat;
-}
+  /* RIGHT */
+  .right{
+    left: calc(var(--holeL) + var(--holeW));
+    top: var(--holeT);
+    width: var(--holeR);
+    height: var(--holeH);
+    background-position: calc(-1 * (var(--holeL) + var(--holeW))) calc(-1 * var(--holeT));
+  }
 
-/* pannelli attorno al buco */
-.top{
-  left:0;
-  top:0;
-  width:1080px;
-  height:var(--holeT);
-}
-
-.bottom{
-  left:0;
-  bottom:0;
-  width:1080px;
-  height:var(--holeB);
-  background-position:0 calc(-1 * (1920px - var(--holeB)));
-}
-
-.left{
-  left:0;
-  top:var(--holeT);
-  width:var(--holeL);
-  height:var(--holeH);
-  background-position:0 calc(-1 * var(--holeT));
-}
-
-.right{
-  right:0;
-  top:var(--holeT);
-  width:var(--holeR);
-  height:var(--holeH);
-  background-position:calc(-1 * (1080px - var(--holeR))) calc(-1 * var(--holeT));
-}
-
-/* ===== CORNICE BUCO ===== */
-#outline{
-  position:absolute;
-  left:var(--holeL);
-  top:var(--holeT);
-
-  width:var(--holeW);
-  height:var(--holeH);
-
-  border-radius:var(--radius);
-  pointer-events:none;
-
-  box-shadow:
-    0 0 0 var(--stroke) var(--strokeColor) inset,
-    0 10px 25px rgba(0,0,0,0.35);
-}
+  .hole-outline{
+    position:absolute;
+    left: var(--holeL);
+    top: var(--holeT);
+    width: var(--holeW);
+    height: var(--holeH);
+    pointer-events:none;
+    box-shadow:
+      0 0 0 3px rgba(255,255,255,0.95) inset,
+      0 10px 25px rgba(0,0,0,0.35);
+    border-radius: 2px;
+    background: transparent;
+  }
 </style>
 </head>
 
 <body>
-<div id="overlay">
-
-  <div class="panel top"></div>
-  <div class="panel left"></div>
-  <div class="panel right"></div>
-  <div class="panel bottom"></div>
-
-  <div id="outline"></div>
-
-</div>
+  <div id="overlay">
+    <div class="panel top"></div>
+    <div class="panel left"></div>
+    <div class="panel right"></div>
+    <div class="panel bottom"></div>
+    <div class="hole-outline"></div>
+  </div>
 </body>
 </html>
